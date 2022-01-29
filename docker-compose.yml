@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8081:8080"
