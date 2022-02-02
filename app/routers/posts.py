@@ -23,3 +23,9 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)):
 @router.get("/{post_id}")
 def get_post(post_id: int, db: Session = Depends(get_db)):
     return Post.get_by_id(db=db, id=post_id)
+
+
+@router.delete("/{post_id}")
+def delete_post(post_id: int, db: Session = Depends(get_db)):
+    Post.delete_by_id(db=db, id=post_id)
+    return {"ok": True}
