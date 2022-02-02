@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 from .internal.database import Base, engine
 from .internal.models.record import RecordNotFound, RecordRelationNotFound
-from .routers import posts
+from .routers import auth, posts
 
 Base.metadata.create_all(bind=engine)
 
@@ -30,3 +30,4 @@ def hello_world():
 
 
 app.include_router(posts.router, prefix="/posts", tags=["posts"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
