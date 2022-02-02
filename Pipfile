@@ -9,6 +9,8 @@ sqlalchemy = "*"
 uvicorn = "*"
 psycopg2 = "*"
 pydantic = "*"
+python-jose = {extras = ["cryptography"], version = "*"}
+passlib = {extras = ["bcrypt"], version = "*"}
 
 [dev-packages]
 
