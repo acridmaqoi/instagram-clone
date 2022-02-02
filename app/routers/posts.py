@@ -18,3 +18,8 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)):
         inital_caption=post.inital_caption,
         image_urls=[PostImage(image_url=image_url) for image_url in post.image_urls],
     )
+
+
+@router.get("/{post_id}")
+def get_post(post_id: int, db: Session = Depends(get_db)):
+    return Post.get_by_id(db=db, id=post_id)
