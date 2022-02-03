@@ -16,7 +16,10 @@ class User(Record):
 
     @classmethod
     def get_by_username(cls, db: Session, username: str):
-        return db.query(cls).filter(cls.username == username)
+        user = db.query(cls).filter(cls.username == username).one_or_none()
+        if not user:
+            raise RecordNotFound(record=cls, id=username)
+        return user
 
     @classmethod
     def create(cls, db: Session, password: str, **data):
