@@ -1,8 +1,10 @@
-import bcrypt
-from sqlalchemy import Column, Integer, String
+from passlib.context import CryptContext
+from sqlalchemy import Column, String
 from sqlalchemy.orm import Session
 
 from .record import Record, RecordNotFound
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class User(Record):
@@ -22,14 +24,19 @@ class User(Record):
 
     @classmethod
     def create(cls, db: Session, password: str, **data):
-        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt(8))
+        hashed_password = pwd_context.hash(password)
 
         return super().create(db=db, hashed_password=hashed_password, **data)
 
     @classmethod
     def update_by_id(cls, db: Session, id: int, password: str, **data):
-        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt(8))
+        hashed_password = pwd_context.hash(password)
 
         return super().update_by_id(
             db=db, id=id, hashed_password=hashed_password, **data
         )
+
+    @classmethod
+    def verify_password(cls, db: Session, username: str, password: str):
+        user = cls.get_by_username(db=db, username=username)
+        return pwd_context.verify(password, user.hashed_password)

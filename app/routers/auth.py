@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from ..internal.database import get_db
 from ..internal.models.record import RecordNotFound
-from ..internal.models.user import User as DbUser
+from ..internal.models.user import User
 from ..schemas.user import UserResponse
 
 router = APIRouter()
@@ -34,20 +34,14 @@ class TokenData(BaseModel):
 
 def authenticate_user(db: Session, username: str, password: str):
     try:
-        user = DbUser.get_by_username(db=db, username=username)
+        user = User.get_by_username(db=db, username=username)
     except RecordNotFound:
         return False
 
-    if not pwd_context.verify(password, user):
+    if not pwd_context.verify(password, user.hashed_password):
         return False
 
     return user
-
-
-def fake_decode_token(token):
-    return UserResponse(
-        username=token + "fakedecoded", email="john@example.com", nickname="John Doe"
-    )
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -64,7 +58,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 async def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ):
-    user = fake_decode_token(token)
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -78,7 +71,7 @@ async def get_current_user(
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = DbUser.get_by_id(db=db, username=token_data.username)
+    user = User.get_by_username(db=db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -86,13 +79,16 @@ async def get_current_user(
 
 @router.get("/users/me/", response_model=UserResponse)
 async def read_users_me(current_user: UserResponse = Depends(get_current_user)):
-    pass
+    return current_user
 
 
 @router.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
-    if not user:
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
+    if not User.verify_password(
+        db=db, username=form_data.username, password=form_data.password
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -101,6 +97,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"sub": form_data.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
