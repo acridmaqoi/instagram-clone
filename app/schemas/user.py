@@ -1,7 +1,17 @@
 from pydantic import BaseModel
 
 
-class User(BaseModel):
+class UserResponse(BaseModel):
     username: str
     email: str
-    nickname: str
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    name: str
+    password: str

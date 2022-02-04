@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from ..internal.database import get_db
 from ..internal.models.record import RecordNotFound
 from ..internal.models.user import User as DbUser
-from ..schemas.user import User
+from ..schemas.user import UserResponse
 
 router = APIRouter()
 
@@ -45,7 +45,7 @@ def authenticate_user(db: Session, username: str, password: str):
 
 
 def fake_decode_token(token):
-    return User(
+    return UserResponse(
         username=token + "fakedecoded", email="john@example.com", nickname="John Doe"
     )
 
@@ -84,8 +84,8 @@ async def get_current_user(
     return user
 
 
-@router.get("/users/me/", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_user)):
+@router.get("/users/me/", response_model=UserResponse)
+async def read_users_me(current_user: UserResponse = Depends(get_current_user)):
     pass
 
 
