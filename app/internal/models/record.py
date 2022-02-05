@@ -1,6 +1,6 @@
 import re
 
-from psycopg2.errors import ForeignKeyViolation
+from psycopg2.errors import ForeignKeyViolation, UniqueViolation
 from sqlalchemy import Column
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -16,14 +16,15 @@ class RecordNotFound(Exception):
 
 
 class RecordRelationNotFound(Exception):
-    def __init__(self, orig):
-        col, val, table = re.search(
-            'Key \((.*)\)=\((\d)\).*table "(.*)"', orig
-        ).groups()
-        model = Record.model_lookup_by_table_name(table)
+    def __init__(self, model, orig):
+        col, val = re.search("Key \((.*)\)=\((\d)\).*", orig).groups()
+        self.detail = f"{model} with {col}={val} does not exist"
 
-        self.orig = orig
-        self.detail = f"{model.__name__} with {col}={val} does not exist"
+
+class RecordAlreadyExists(Exception):
+    def __init__(self, model, orig):
+        col, val = re.search("Key \((.*)\)=\((.*)\).*", orig).groups()
+        self.detail = f"{model} with {col}={val} already exists"
 
 
 class Record(Base):
@@ -52,7 +53,9 @@ class Record(Base):
             return record
         except IntegrityError as e:
             if isinstance(e.orig, ForeignKeyViolation):
-                raise RecordRelationNotFound(orig=e.orig.args[0])
+                raise RecordRelationNotFound(model=cls.__name__, orig=e.orig.args[0])
+            elif isinstance(e.orig, UniqueViolation):
+                raise RecordAlreadyExists(model=cls.__name__, orig=e.orig.args[0])
             else:
                 raise
 

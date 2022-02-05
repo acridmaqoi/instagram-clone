@@ -2,7 +2,11 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from .internal.database import Base, engine
-from .internal.models.record import RecordNotFound, RecordRelationNotFound
+from .internal.models.record import (
+    RecordAlreadyExists,
+    RecordNotFound,
+    RecordRelationNotFound,
+)
 from .routers import auth, posts, users
 
 Base.metadata.create_all(bind=engine)
@@ -17,6 +21,7 @@ def not_found_exception_handler(request: Request, exc: RecordNotFound):
     )
 
 
+@app.exception_handler(RecordAlreadyExists)
 @app.exception_handler(RecordRelationNotFound)
 def relation_not_found_exception_handler(request: Request, exc: RecordRelationNotFound):
     return JSONResponse(
