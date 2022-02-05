@@ -17,14 +17,16 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/current", response_model=UserResponse)
 def get_current_user(
-    user: str = Depends(get_current_user), db: Session = Depends(get_db)
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     return user
 
 
-@router.delete("/{user_id}")
-def delete_user(user_id: int, db: Session = Depends(get_db)):
-    User.delete_by_id(db=db, id=user_id)
+@router.delete("/current")
+def delete_current_user(
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    User.delete_by_id(db=db, id=user.id)
     return {"ok": True}
 
 
