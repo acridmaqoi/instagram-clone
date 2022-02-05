@@ -32,18 +32,6 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-def authenticate_user(db: Session, username: str, password: str):
-    try:
-        user = User.get_by_username(db=db, username=username)
-    except RecordNotFound:
-        return False
-
-    if not pwd_context.verify(password, user.hashed_password):
-        return False
-
-    return user
-
-
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
