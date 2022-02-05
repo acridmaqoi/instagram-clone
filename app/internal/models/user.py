@@ -12,7 +12,7 @@ class User(Record):
 
     username = Column(String, nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
-    email = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
 
     @classmethod
