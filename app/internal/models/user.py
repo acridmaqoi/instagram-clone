@@ -19,7 +19,7 @@ class User(Record):
     def get_by_username(cls, db: Session, username: str):
         user = db.query(cls).filter(cls.username == username).one_or_none()
         if not user:
-            raise RecordNotFound(record=cls, id=username)
+            raise RecordNotFound(record=cls, col="username", val=username)
         return user
 
     @classmethod

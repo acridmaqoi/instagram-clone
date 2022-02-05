@@ -11,8 +11,8 @@ from ..database import Base
 
 
 class RecordNotFound(Exception):
-    def __init__(self, record, id: int):
-        self.detail = f"{record.__name__} with id={id} not found"
+    def __init__(self, record, col: str, val: str):
+        self.detail = f"{record.__name__} with {col}={val} not found"
 
 
 class RecordRelationNotFound(Exception):
@@ -60,7 +60,7 @@ class Record(Base):
     def get_by_id(cls, db: Session, id: int):
         record = db.query(cls).filter(cls.id == id).one_or_none()
         if record is None:
-            raise RecordNotFound(record=cls, id=id)
+            raise RecordNotFound(record=cls, col="id", val=id)
         return record
 
     @classmethod
@@ -87,3 +87,4 @@ class Record(Base):
     def delete_by_id(cls, db: Session, id: int):
         record = cls.get_by_id(db=db, id=id)
         db.delete(record)
+        db.commit()
