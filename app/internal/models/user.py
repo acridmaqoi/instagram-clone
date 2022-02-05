@@ -10,7 +10,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class User(Record):
     __tablename__ = "users"
 
-    username = Column(String, nullable=False)
+    username = Column(String, nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
     email = Column(String, nullable=False)
     name = Column(String, nullable=False)
