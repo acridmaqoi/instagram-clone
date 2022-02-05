@@ -10,13 +10,8 @@ from ..schemas.user import UserResponse
 router = APIRouter()
 
 
-@router.get("/users/me/", response_model=UserResponse)
-async def read_users_me(current_user: UserResponse = Depends(get_current_user)):
-    return current_user
-
-
-@router.post("/token")
-async def login(
+@router.post("/session")
+async def create_user_session(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
     if not User.verify_password(
