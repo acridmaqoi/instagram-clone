@@ -17,6 +17,7 @@ class User(Record):
 
     posts = relationship("Post", backref="user")
     comments = relationship("Comment", backref="user")
+    likes = relationship("Like", back_populates="user")
 
     @classmethod
     def get_by_username(cls, db: Session, username: str):

@@ -12,3 +12,4 @@ class Post(Record):
 
     images = relationship("PostImage")
     comments = relationship("Comment", back_populates="post")
+    likes = relationship("Like", back_populates="post")
