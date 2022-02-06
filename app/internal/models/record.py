@@ -11,7 +11,7 @@ from ..database import Base
 
 
 class RecordNotFound(Exception):
-    def __init__(self, record, col: str, val: str):
+    def __init__(self, record, col, val):
         self.detail = f"{record.__name__} with {col}={val} not found"
 
 
