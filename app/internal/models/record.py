@@ -73,7 +73,7 @@ class Record(Base):
             return record
         except IntegrityError as e:
             if isinstance(e.orig, ForeignKeyViolation):
-                raise RecordRelationNotFound(orig=e.orig.args[0])
+                raise RecordRelationNotFound(model=cls.__name__, orig=e.orig.args[0])
             else:
                 raise
 
