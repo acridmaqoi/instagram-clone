@@ -10,14 +10,26 @@ from sqlalchemy.types import DateTime, Integer
 from ..database import Base
 
 
+def model_lookup_by_table_name(table_name):
+    registry_instance = getattr(Record, "registry")
+    for mapper_ in registry_instance.mappers:
+        model = mapper_.class_
+        model_class_name = model.__tablename__
+        if model_class_name == table_name:
+            return model.__name__
+
+
 class RecordNotFound(Exception):
     def __init__(self, record, col, val):
         self.detail = f"{record.__name__} with {col}={val} not found"
 
 
 class RecordRelationNotFound(Exception):
-    def __init__(self, model, orig):
-        col, val = re.search("Key \((.*)\)=\((\d)\).*", orig).groups()
+    def __init__(self, orig):
+        col, val, table = re.search(
+            'Key \((.*)\)=\((\d)\).*table "(.*)"', orig
+        ).groups()
+        model = model_lookup_by_table_name(table)
         self.detail = f"{model} with {col}={val} does not exist"
 
 
@@ -44,7 +56,7 @@ class Record(Base):
             return record
         except IntegrityError as e:
             if isinstance(e.orig, ForeignKeyViolation):
-                raise RecordRelationNotFound(model=cls.__name__, orig=e.orig.args[0])
+                raise RecordRelationNotFound(orig=e.orig.args[0])
             elif isinstance(e.orig, UniqueViolation):
                 raise RecordAlreadyExists(model=cls.__name__, orig=e.orig.args[0])
             else:
@@ -73,7 +85,7 @@ class Record(Base):
             return record
         except IntegrityError as e:
             if isinstance(e.orig, ForeignKeyViolation):
-                raise RecordRelationNotFound(model=cls.__name__, orig=e.orig.args[0])
+                raise RecordRelationNotFound(orig=e.orig.args[0])
             else:
                 raise
 
