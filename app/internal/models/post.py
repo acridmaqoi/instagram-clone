@@ -11,3 +11,4 @@ class Post(Record):
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
     image_urls = relationship("PostImage")
+    comments = relationship("Comment")
