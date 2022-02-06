@@ -16,6 +16,7 @@ class User(Record):
     name = Column(String, nullable=False)
 
     posts = relationship("Post", backref="user")
+    comments = relationship("Comment", backref="user")
 
     @classmethod
     def get_by_username(cls, db: Session, username: str):
