@@ -1,17 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..auth import get_current_user
 from ..internal.database import get_db
+from ..internal.models.comment import Comment
 from ..internal.models.post import Post
 from ..internal.models.post_image import PostImage
 from ..internal.models.user import User
-from ..schemas.post import Post as PostCreate
+from ..schemas.post import PostCreate, PostResponse
 
 router = APIRouter()
 
 
-@router.post("")
+@router.post("", response_model=PostResponse)
 def create_post(
     post: PostCreate,
     user: User = Depends(get_current_user),
@@ -21,13 +22,14 @@ def create_post(
         db=db,
         user_id=user.id,
         inital_caption=post.inital_caption,
-        image_urls=[PostImage(image_url=image_url) for image_url in post.image_urls],
+        images=[PostImage(image_url=image.image_url) for image in post.images],
     )
 
 
-@router.get("/{post_id}")
+@router.get("/{post_id}", response_model=PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
-    return Post.get_by_id(db=db, id=post_id)
+    post = Post.get_by_id(db=db, id=post_id)
+    return post
 
 
 @router.delete("/{post_id}")
@@ -39,5 +41,31 @@ def delete_post(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
     db.delete(post)
+    db.commit()
+    return {"ok": True}
+
+
+@router.post("/{post_id}/comments")
+def create_post_comment(
+    post_id: int,
+    text: str = Body(..., embed=True),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return Comment.create(db=db, text=text, post_id=post_id, user_id=user.id)
+
+
+@router.delete("/{post_id}/comments/{comment_id}")
+def delete_post_comment(
+    post_id: int,
+    comment_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    comment = Comment.get_by_id(db=db, id=comment_id)
+    if comment.user_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    db.delete(comment)
     db.commit()
     return {"ok": True}

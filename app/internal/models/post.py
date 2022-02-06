@@ -10,5 +10,5 @@ class Post(Record):
     inital_caption = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
-    image_urls = relationship("PostImage")
+    images = relationship("PostImage")
     comments = relationship("Comment")
