@@ -14,6 +14,7 @@ passlib = {extras = ["bcrypt"], version = "*"}
 python-multipart = "*"
 
 [dev-packages]
+mypy = "*"
 
 [requires]
 python_version = "3.10"
