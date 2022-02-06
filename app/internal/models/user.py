@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from sqlalchemy import Column, String
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, relationship
 
 from .record import Record, RecordNotFound
 
@@ -8,12 +8,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class User(Record):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     username = Column(String, nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     name = Column(String, nullable=False)
+
+    posts = relationship("Post", backref="user")
 
     @classmethod
     def get_by_username(cls, db: Session, username: str):

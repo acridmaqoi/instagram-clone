@@ -4,7 +4,7 @@ from .record import Record
 
 
 class PostImage(Record):
-    __tablename__ = "post_images"
+    __tablename__ = "post_image"
 
-    post_id = Column(Integer, ForeignKey("posts.id"))
+    post_id = Column(Integer, ForeignKey("post.id"))
     image_url = Column(String, nullable=False)
