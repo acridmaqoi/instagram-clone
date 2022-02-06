@@ -66,6 +66,7 @@ def delete_post_comment(
     if comment.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
-    db.delete(comment)
-    db.commit()
+    Post.get_by_id(db=db, id=post_id)
+    Comment.delete_by_id(db=db, id=comment_id)
+
     return {"ok": True}

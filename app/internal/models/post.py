@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, object_session
 
 from .record import Record
 
@@ -11,4 +11,4 @@ class Post(Record):
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
     images = relationship("PostImage")
-    comments = relationship("Comment")
+    comments = relationship("Comment", back_populates="post", lazy="dynamic")

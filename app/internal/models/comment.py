@@ -1,4 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from .record import Record
 
@@ -9,3 +10,5 @@ class Comment(Record):
     text = Column(String, nullable=False)
     post_id = Column(Integer, ForeignKey("post.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+
+    post = relationship("Post", back_populates="comments", uselist=False)
