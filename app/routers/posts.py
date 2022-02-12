@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from ..auth import get_current_user
 from ..internal.database import get_db
 from ..internal.models.comment import Comment
+from ..internal.models.like import Like
 from ..internal.models.post import Post
 from ..internal.models.post_image import PostImage
 from ..internal.models.user import User
@@ -69,4 +70,25 @@ def delete_post_comment(
     Post.get_by_id(db=db, id=post_id)
     Comment.delete_by_id(db=db, id=comment_id)
 
+    return {"ok": True}
+
+
+@router.post("/{post_id}/likes")
+def like_post(
+    post_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    Like.create(db=db, user_id=user.id, post_id=post_id)
+    return {"ok": True}
+
+
+@router.delete("/{post_id}/likes")
+def unlike_post(
+    post_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user.likes.filter(Like.post_id == post_id).delete()
+    db.commit()
     return {"ok": True}

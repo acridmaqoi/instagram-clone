@@ -1,5 +1,6 @@
 from passlib.context import CryptContext
 from sqlalchemy import Column, String
+from sqlalchemy.ext.hybrid import hybrid_method
 from sqlalchemy.orm import Session, relationship
 
 from .record import Record, RecordNotFound
@@ -17,7 +18,7 @@ class User(Record):
 
     posts = relationship("Post", backref="user")
     comments = relationship("Comment", backref="user")
-    likes = relationship("Like", back_populates="user")
+    likes = relationship("Like", back_populates="user", lazy="dynamic")
 
     @classmethod
     def get_by_username(cls, db: Session, username: str):
