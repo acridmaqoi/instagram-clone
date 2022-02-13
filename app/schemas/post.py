@@ -11,6 +11,7 @@ class PostImage(BaseModel):
 
 
 class Comment(BaseModel):
+    id: int
     text: str
     user: UserResponse
 

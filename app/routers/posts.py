@@ -4,12 +4,11 @@ from sqlalchemy.orm import Session
 from ..auth import get_current_user
 from ..internal.controllers import post_controller
 from ..internal.database import get_db
-from ..internal.models.comment import Comment
 from ..internal.models.like import Like
 from ..internal.models.post import Post
 from ..internal.models.post_image import PostImage
 from ..internal.models.user import User
-from ..schemas.post import PostCreate, PostResponse
+from ..schemas.post import Comment, PostCreate, PostResponse
 
 router = APIRouter()
 
@@ -43,14 +42,16 @@ def delete_post(
     return {"ok": True}
 
 
-@router.post("/{post_id}/comments")
+@router.post("/{post_id}/comments", response_model=Comment)
 def create_post_comment(
     post_id: int,
     text: str = Body(..., embed=True),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return Comment.create(db=db, text=text, post_id=post_id, user_id=user.id)
+    return post_controller.create_post_comment(
+        db=db, comment=text, post_id=post_id, user=user
+    )
 
 
 @router.delete("/{post_id}/comments/{comment_id}")
@@ -60,12 +61,13 @@ def delete_post_comment(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    comment = Comment.get_by_id(db=db, id=comment_id)
+    comment = post_controller.get_post_comment(
+        db=db, comment_id=comment_id, post_id=post_id
+    )
     if comment.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
-    Post.get_by_id(db=db, id=post_id)
-    Comment.delete_by_id(db=db, id=comment_id)
+    post_controller.delete_post_comment(db=db, post_id=post_id, comment_id=comment_id)
 
     return {"ok": True}
 

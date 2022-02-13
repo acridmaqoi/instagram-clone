@@ -11,5 +11,5 @@ class Post(Record):
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
     images = relationship("PostImage")
-    comments = relationship("Comment", back_populates="post")
+    comments = relationship("Comment", back_populates="post", lazy="dynamic")
     likes = relationship("Like", back_populates="post")
