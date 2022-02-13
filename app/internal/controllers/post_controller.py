@@ -53,7 +53,8 @@ def delete_post_comment(db: Session, post_id: int, comment_id: int):
 def get_post_comment(db: Session, post_id: int, comment_id: int):
     post = record_crud.get_record_by_id(db=db, id=post_id, model=Post)
 
-    comment = post.comments.filter(Comment.id == comment_id).one_or_none()
+    comment = post._comments.filter(Comment.id == comment_id).one_or_none()
+
     if comment is None:
         raise RecordNotFound(Comment, col="id", val=comment_id)
 
