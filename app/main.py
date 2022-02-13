@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from .internal.database import Base, engine
-from .internal.models.record import (
+from .internal.controllers.record_crud import (
     RecordAlreadyExists,
     RecordNotFound,
     RecordRelationNotFound,
 )
+from .internal.database import Base, engine
 from .routers import posts, users
 
 Base.metadata.create_all(bind=engine)

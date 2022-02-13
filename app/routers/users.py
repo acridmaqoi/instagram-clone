@@ -3,16 +3,17 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from ..auth import create_user_token, get_current_user
+from ..internal.controllers import user_controller
 from ..internal.database import get_db
 from ..internal.models.user import User
-from ..schemas.user import UserCreate, UserResponse
+from ..schemas.user import UserCreate, UserResponse, UserUpdate
 
 router = APIRouter()
 
 
 @router.post("", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return User.create(db=db, **user.dict())
+    return user_controller.create_user(db=db, created_user=user)
 
 
 @router.get("/current", response_model=UserResponse)
@@ -22,11 +23,22 @@ def get_current_user(
     return user
 
 
+@router.put("/current", response_model=UserResponse)
+def update_current_user(
+    updated_user: UserUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return user_controller.update_user(
+        db=db, updated_user=updated_user, user_id=user.id
+    )
+
+
 @router.delete("/current")
 def delete_current_user(
     user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
-    User.delete_by_id(db=db, id=user.id)
+    user_controller.delete_user(db=db, user_id=user.id)
     return {"ok": True}
 
 
@@ -34,7 +46,7 @@ def delete_current_user(
 async def create_user_session(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
-    if not User.verify_password(
+    if not user_controller.verify_user_password(
         db=db, username=form_data.username, password=form_data.password
     ):
         raise HTTPException(

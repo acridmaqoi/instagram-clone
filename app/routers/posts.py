@@ -2,6 +2,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..auth import get_current_user
+from ..internal.controllers import post_controller
 from ..internal.database import get_db
 from ..internal.models.comment import Comment
 from ..internal.models.like import Like
@@ -19,17 +20,13 @@ def create_post(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return Post.create(
-        db=db,
-        user_id=user.id,
-        inital_caption=post.inital_caption,
-        images=[PostImage(image_url=image.image_url) for image in post.images],
-    )
+
+    return post_controller.create_post(db=db, post=post, user_id=user.id)
 
 
 @router.get("/{post_id}", response_model=PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
-    post = Post.get_by_id(db=db, id=post_id)
+    post = post_controller.get_post_by_id(db=db, post_id=post_id)
     return post
 
 
@@ -37,12 +34,12 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 def delete_post(
     post_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
-    post = Post.get_by_id(db=db, id=post_id)
+    post = post_controller.get_post_by_id(db=db, post_id=post_id)
     if post.user_id != user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
-    db.delete(post)
-    db.commit()
+    post_controller.delete_post(db=db, post_id=post_id)
+
     return {"ok": True}
 
 

@@ -1,1 +1,7 @@
-{}
+{
+    "python.analysis.useLibraryCodeForTypes": true,
+    "python.analysis.disabled": [
+        "inherit-non-class"
+    ],
+    "python.linting.enabled": false
+}

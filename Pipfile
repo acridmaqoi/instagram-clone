@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
-sqlalchemy = "*"
+sqlalchemy = {extras = ["mypy"], version = "*"}
 uvicorn = "*"
 psycopg2 = "*"
 pydantic = "*"
@@ -15,6 +15,7 @@ python-multipart = "*"
 
 [dev-packages]
 mypy = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.10"
