@@ -76,7 +76,8 @@ def like_post(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    Like.create(db=db, user_id=user.id, post_id=post_id)
+    post_controller.like_post(db=db, post_id=post_id, user=user)
+
     return {"ok": True}
 
 
@@ -86,6 +87,6 @@ def unlike_post(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    user.likes.filter(Like.post_id == post_id).delete()
-    db.commit()
+    post_controller.dislike_post(db=db, post_id=post_id, user=user)
+
     return {"ok": True}
