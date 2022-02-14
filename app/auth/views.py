@@ -31,6 +31,8 @@ def login_user(user_in: UserLogin, db: Session = Depends(get_db)):
     if user and user.check_password(user_in.password):
         return user
 
+    raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+
 
 @router.post("/register", response_model=UserRegisterResponse)
 def register_user(user_in: UserRegister, db: Session = Depends(get_db)):
