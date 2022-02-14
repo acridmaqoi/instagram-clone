@@ -1,38 +1,16 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from .internal.controllers.record_crud import (
-    RecordAlreadyExists,
-    RecordNotFound,
-    RecordRelationNotFound,
-)
+from app.api import api as api_router
+
 from .internal.database import Base, engine
-from .routers import posts, users
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+api = FastAPI()
 
 
-@app.exception_handler(RecordNotFound)
-def not_found_exception_handler(request: Request, exc: RecordNotFound):
-    return JSONResponse(
-        status_code=status.HTTP_404_NOT_FOUND, content={"detail": exc.detail}
-    )
+api.include_router(api_router)
 
-
-@app.exception_handler(RecordAlreadyExists)
-@app.exception_handler(RecordRelationNotFound)
-def relation_not_found_exception_handler(request: Request, exc: RecordRelationNotFound):
-    return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={"detail": exc.detail}
-    )
-
-
-@app.get("/hello")
-def hello_world():
-    return {"message": "Hello, World!"}
-
-
-app.include_router(posts.router, prefix="/posts", tags=["posts"])
-app.include_router(users.router, prefix="/users", tags=["users"])
+app.mount("/api/", app=api)
