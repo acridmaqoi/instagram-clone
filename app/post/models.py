@@ -14,17 +14,9 @@ class PostBase(InstagramBase):
     caption: str
 
 
-class ApiResponses(BaseModel):
-    status: str = Field(default="ok")
-
-
-class PostRead(PostBase, ApiResponses):
+class PostRead(PostBase):
     id: int
 
 
 class PostCreate(PostBase):
-    ...
-
-
-class PostDelete(InstagramBase, ApiResponses):
     ...
