@@ -56,3 +56,15 @@ def get_post_comment(db: Session, post_id: int, comment_id: int):
         raise RecordNotFound(Comment, col="id", val=comment_id)
 
     return comment
+
+
+def like_post_comment(db: Session, post_id: int, comment_id: int, user: User):
+    # user can only like a post once
+    if user.likes.filter(Like.entity_id == comment_id).count() == 0:
+        user.likes.append(Like(entity_id=comment_id))
+        db.commit()
+
+
+def dislike_post_comment(db: Session, post_id: int, comment_id: int, user: User):
+    user.likes.filter(Like.entity_id == comment_id).delete()
+    db.commit()

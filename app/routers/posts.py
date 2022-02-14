@@ -91,3 +91,27 @@ def delete_post_comment(
     post_controller.delete_post_comment(db=db, post_id=post_id, comment_id=comment_id)
 
     return {"ok": True}
+
+
+@router.post("/{post_id}/comments/{comment_id}/likes")
+def like_post_comment(
+    post_id: int,
+    comment_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return post_controller.like_post_comment(
+        db=db, post_id=post_id, comment_id=comment_id, user=user
+    )
+
+
+@router.delete("/{post_id}/comments/{comment_id}/likes")
+def dislike_post_comment(
+    post_id: int,
+    comment_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return post_controller.dislike_post_comment(
+        db=db, post_id=post_id, comment_id=comment_id, user=user
+    )
