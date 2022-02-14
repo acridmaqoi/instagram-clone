@@ -7,7 +7,6 @@ from .internal.controllers.record_crud import (
     RecordRelationNotFound,
 )
 from .internal.database import Base, engine
-from .routers import posts, users
 
 Base.metadata.create_all(bind=engine)
 
@@ -32,7 +31,3 @@ def relation_not_found_exception_handler(request: Request, exc: RecordRelationNo
 @app.get("/hello")
 def hello_world():
     return {"message": "Hello, World!"}
-
-
-app.include_router(posts.router, prefix="/posts", tags=["posts"])
-app.include_router(users.router, prefix="/users", tags=["users"])

@@ -8,7 +8,7 @@ fastapi = "*"
 sqlalchemy = {extras = ["mypy"], version = "*"}
 uvicorn = "*"
 psycopg2 = "*"
-pydantic = "*"
+pydantic = {extras = ["email"], version = "*"}
 python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
 python-multipart = "*"

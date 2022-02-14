@@ -3,7 +3,6 @@ from http.client import HTTPException
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from ..auth import get_current_user
 from ..internal.database import get_db
 from ..internal.models.user import User
 from .models import (
@@ -13,13 +12,13 @@ from .models import (
     UserRegister,
     UserRegisterResponse,
 )
-from .service import create_user, get_user, get_user_by_email
+from .service import create_user, get_current_user, get_user, get_user_by_email
 
 router = APIRouter()
 
 
 @router.get("/current", response_model=UserRead)
-def get_current_user(
+def get_logged_in_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
