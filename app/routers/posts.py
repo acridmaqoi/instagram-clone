@@ -1,11 +1,10 @@
+from app.internal.models.likeable_entity import Comment, Like, Post
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..auth import get_current_user
 from ..internal.controllers import post_controller
 from ..internal.database import get_db
-from ..internal.models.like import Like
-from ..internal.models.post import Post
 from ..internal.models.post_image import PostImage
 from ..internal.models.user import User
 from ..schemas.post import Comment, PostCreate, PostResponse

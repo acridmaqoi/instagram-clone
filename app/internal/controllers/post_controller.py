@@ -1,11 +1,8 @@
-from app.internal.models import post
-from app.internal.models.comment import Comment
+from app.internal.models.likeable_entity import Comment, Like, Post
+from app.internal.models.user import User
 from app.schemas.post import PostCreate, PostResponse
 from sqlalchemy.orm import Session
 
-from ..models.like import Like
-from ..models.post import Post
-from ..models.user import User
 from . import record_crud
 from .record_crud import RecordNotFound
 
@@ -24,13 +21,13 @@ def delete_post(db: Session, post_id: int):
 
 def like_post(db: Session, post_id: int, user: User):
     # user can only like a post once
-    if user.likes.filter(Like.post_id == post_id).count() == 0:
-        user.likes.append(Like(post_id=post_id))
+    if user.likes.filter(Like.entity_id == post_id).count() == 0:
+        user.likes.append(Like(entity_id=post_id))
         db.commit()
 
 
 def dislike_post(db: Session, post_id: int, user: User):
-    user.likes.filter(Like.post_id == post_id).delete()
+    user.likes.filter(Like.entity_id == post_id).delete()
     db.commit()
 
 

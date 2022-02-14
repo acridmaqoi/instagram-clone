@@ -7,7 +7,7 @@ from .record import Record
 class Like(Record):
     __tablename__ = "like"
 
-    post_id = Column(Integer, ForeignKey("post.id"), nullable=False)
+    entity_id = Column(Integer, ForeignKey("likeable_entity.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
 
     user = relationship("User", back_populates="likes", uselist=False)

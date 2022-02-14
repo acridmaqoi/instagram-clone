@@ -8,7 +8,11 @@ from sqlalchemy.schema import (
 )
 
 from app.internal.database import Base, engine
-from app.internal.models import post, post_image, record, user
+from app.internal.models.like import Like
+from app.internal.models.likeable_entity import Comment, LikeableEntity, Post
+from app.internal.models.post_image import PostImage
+from app.internal.models.record import Record
+from app.internal.models.user import User
 
 
 def drop_everything(engine):
