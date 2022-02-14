@@ -12,7 +12,7 @@ from .models import (
 )
 from .service import create_user, get_current_user, get_user, get_user_by_email
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.get("/current", response_model=UserRead)
