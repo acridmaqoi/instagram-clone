@@ -7,6 +7,7 @@ from sqlalchemy.schema import (
     Table,
 )
 
+from app.auth.models import *
 from app.internal.database import Base, engine
 from app.internal.models import post, post_image, record, user
 

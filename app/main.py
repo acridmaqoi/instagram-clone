@@ -3,11 +3,6 @@ from fastapi.responses import JSONResponse
 
 from app.api import api as api_router
 
-from .internal.controllers.record_crud import (
-    RecordAlreadyExists,
-    RecordNotFound,
-    RecordRelationNotFound,
-)
 from .internal.database import Base, engine
 
 Base.metadata.create_all(bind=engine)

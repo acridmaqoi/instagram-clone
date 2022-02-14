@@ -29,7 +29,7 @@ def get_current_user(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
+        email = payload.get("email")
         if email is None:
             raise credentials_exception
     except JWTError:
@@ -51,7 +51,7 @@ def get_user_by_email(db: Session, email: str) -> Optional[InstagramUser]:
 def create_user(db: Session, user_in: UserRegister):
     password = bytes(user_in.password, "utf-8")
 
-    user = InstagramUser(**user_in.dict())
+    user = InstagramUser(**user_in.dict(exclude={"password"}), password=password)
     db.add(user)
     db.commit()
     return user

@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from ..internal.database import get_db
-from ..internal.models.user import User
 from .models import (
+    InstagramUser,
     UserLogin,
     UserLoginResponse,
     UserRead,
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/auth")
 
 @router.get("/current", response_model=UserRead)
 def get_logged_in_user(
-    current_user: User = Depends(get_current_user),
+    current_user: InstagramUser = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     return current_user

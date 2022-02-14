@@ -22,10 +22,11 @@ def hash_password(password: str):
 
 class InstagramUser(Base):
     __tablename__ = "instagram_user"
-    __table_args__ = {"schema": "instagram_core"}
+    # __table_args__ = {"schema": "instagram_core"}
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
+    username = Column(String, unique=True)
     password = Column(LargeBinary, nullable=False)
 
     def check_password(self, password: str):
