@@ -10,6 +10,7 @@ from sqlalchemy.schema import (
 from app.auth.models import *
 from app.internal.database import Base, engine
 from app.internal.models import post, post_image, record, user
+from app.post.models import *
 
 
 def drop_everything(engine):
