@@ -41,6 +41,28 @@ def delete_post(
     return {"ok": True}
 
 
+@router.post("/{post_id}/likes")
+def like_post(
+    post_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    post_controller.like_post(db=db, post_id=post_id, user=user)
+
+    return {"ok": True}
+
+
+@router.delete("/{post_id}/likes")
+def unlike_post(
+    post_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    post_controller.dislike_post(db=db, post_id=post_id, user=user)
+
+    return {"ok": True}
+
+
 @router.post("/{post_id}/comments", response_model=Comment)
 def create_post_comment(
     post_id: int,
@@ -67,27 +89,5 @@ def delete_post_comment(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
     post_controller.delete_post_comment(db=db, post_id=post_id, comment_id=comment_id)
-
-    return {"ok": True}
-
-
-@router.post("/{post_id}/likes")
-def like_post(
-    post_id: int,
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    post_controller.like_post(db=db, post_id=post_id, user=user)
-
-    return {"ok": True}
-
-
-@router.delete("/{post_id}/likes")
-def unlike_post(
-    post_id: int,
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    post_controller.dislike_post(db=db, post_id=post_id, user=user)
 
     return {"ok": True}
