@@ -86,3 +86,11 @@ class CustomBase:
 
 
 Base = declarative_base(cls=CustomBase)
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
