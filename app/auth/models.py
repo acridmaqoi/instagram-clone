@@ -8,6 +8,7 @@ from app.models import InstagramBase
 from jose import jwt
 from pydantic import BaseModel, EmailStr, Field, validator
 from sqlalchemy import Column, Integer, LargeBinary, String
+from sqlalchemy.orm import relationship
 
 SECRET_KEY = "c13836d0e76c81a92a65ebb2f00bdb19c058e799c658559a6a73918e689bc99e"
 ALGORITHM = "HS256"
@@ -27,6 +28,8 @@ class InstagramUser(Base):
     email = Column(String, unique=True)
     username = Column(String, unique=True)
     password = Column(LargeBinary, nullable=False)
+
+    likes = relationship("Like", back_populates="user")
 
     def check_password(self, password: str):
         return bcrypt.checkpw(password.encode("utf-8"), self.password)
