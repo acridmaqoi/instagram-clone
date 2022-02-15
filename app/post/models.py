@@ -24,6 +24,8 @@ class Post(LikeableEntity):
     caption = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("instagram_user.id"))
 
+    user = relationship("InstagramUser", uselist=False)
+
     comments = relationship(
         "Comment", back_populates="post", foreign_keys="Comment.post_id"
     )
@@ -38,6 +40,8 @@ class Comment(LikeableEntity):
     text = Column(String, nullable=False)
     post_id = Column(Integer, ForeignKey("post.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("instagram_user.id"), nullable=False)
+
+    user = relationship("InstagramUser", uselist=False)
 
     post = relationship(
         "Post",

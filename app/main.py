@@ -8,8 +8,6 @@ from app.api import api as api_router
 
 from .internal.database import Base, engine
 
-Base.metadata.create_all(bind=engine)
-
 
 class BaseJSONResponse(JSONResponse):
     def render(self, content: typing.Any) -> bytes:

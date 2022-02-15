@@ -13,6 +13,7 @@ from .service import (
     get,
     get_comment,
     like_post_or_comment,
+    uncomment,
 )
 
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -81,7 +82,7 @@ def comment(
 
 
 @router.delete("/{post_id}/comments/{comment_id}")
-def delete_comment(
+def delete_post_comment(
     comment_id: int,
     current_post: Post = Depends(get_current_post),
     current_user: InstagramUser = Depends(get_current_user),
@@ -93,7 +94,7 @@ def delete_comment(
     if comment.user_id != current_user.id:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
-    delete_comment(db=db, current_post=current_post, comment_id=comment_id)
+    uncomment(db=db, current_post=current_post, comment_id=comment_id)
 
 
 @router.post("/{post_id}/likes")

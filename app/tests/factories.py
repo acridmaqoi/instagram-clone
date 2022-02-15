@@ -1,7 +1,9 @@
 from typing import Sequence
 
+from app import main  # noqa
 from app.auth.models import InstagramUser, hash_password
-from factory import Sequence
+from app.post.models import Comment, Like, Post
+from factory import Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
 from factory.fuzzy import FuzzyText
 from faker import Faker
@@ -28,3 +30,29 @@ class InstagramUserFactory(BaseFactory):
 
     class Meta:
         model = InstagramUser
+
+
+class PostFactory(BaseFactory):
+
+    caption = FuzzyText()
+    user = SubFactory(InstagramUserFactory)
+
+    class Meta:
+        model = Post
+
+
+class LikeFactory(BaseFactory):
+    user = SubFactory(InstagramUserFactory)
+    entity = SubFactory(PostFactory)  # TODO support comments
+
+    class Meta:
+        model = Like
+
+
+class CommentFactory(BaseFactory):
+    user = SubFactory(InstagramUserFactory)
+    text = FuzzyText()
+    post = SubFactory(PostFactory)
+
+    class Meta:
+        model = Comment

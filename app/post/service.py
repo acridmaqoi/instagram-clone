@@ -24,9 +24,9 @@ def delete(db: Session, post_id: int) -> None:
 
 def get_comment(db: Session, current_post: Post, comment_id: int) -> Optional[Comment]:
     return (
-        db.query(Post)
-        .filter(Post.id == current_post.id)
-        .filter(Post.comments.any(comment_id=comment_id))
+        db.query(Comment)
+        .filter(Comment.post_id == current_post.id)
+        .filter(Comment.id == comment_id)
         .one_or_none()
     )
 
@@ -38,7 +38,7 @@ def add_comment(
     db.commit()
 
 
-def delete_comment(db: Session, current_post: Post, comment_id: int):
+def uncomment(db: Session, current_post: Post, comment_id: int):
     db.query(Comment).filter(Comment.post_id == current_post.id).filter(
         Comment.id == comment_id
     ).delete()
