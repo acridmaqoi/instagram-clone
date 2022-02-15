@@ -19,6 +19,10 @@ class LikeableEntity(Base):
         "polymorphic_on": type,
     }
 
+    @hybrid_property
+    def like_count(self):
+        return self.likes.__len__()
+
 
 class Post(LikeableEntity):
     id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
@@ -26,7 +30,6 @@ class Post(LikeableEntity):
     user_id = Column(Integer, ForeignKey("instagram_user.id"))
 
     user = relationship("InstagramUser", uselist=False)
-    likes = relationship("Like")
     comments = relationship(
         "Comment", back_populates="post", foreign_keys="Comment.post_id"
     )
@@ -34,10 +37,6 @@ class Post(LikeableEntity):
     __mapper_args__ = {
         "polymorphic_identity": "post",
     }
-
-    @hybrid_property
-    def like_count(self):
-        return self.likes.__len__()
 
 
 class Comment(LikeableEntity):
