@@ -78,8 +78,10 @@ class CommentCreate(InstagramBase):
 
 
 class CommentRead(InstagramBase):
+    id: int
     text: str
     user: UserRead
+    like_count: int
 
 
 class PostBase(InstagramBase):
