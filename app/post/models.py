@@ -32,7 +32,10 @@ class Post(LikeableEntity):
 
     user = relationship("InstagramUser", uselist=False)
     comments = relationship(
-        "Comment", back_populates="post", foreign_keys="Comment.post_id"
+        "Comment",
+        back_populates="post",
+        foreign_keys="Comment.post_id",
+        cascade="all,delete",
     )
 
     __mapper_args__ = {
@@ -47,7 +50,7 @@ class Post(LikeableEntity):
 class Comment(LikeableEntity):
     id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
     text = Column(String, nullable=False)
-    post_id = Column(Integer, ForeignKey("post.id"), nullable=False)
+    post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey("instagram_user.id"), nullable=False)
 
     user = relationship("InstagramUser", uselist=False)
