@@ -23,7 +23,26 @@ def delete(db: Session, post_id: int) -> None:
 
 
 def get_comment(db: Session, current_post: Post, comment_id: int) -> Optional[Comment]:
-    return db.query(Post).filter(Post.comments.any(comment_id=comment_id)).one_or_none()
+    return (
+        db.query(Post)
+        .filter(Post.id == current_post.id)
+        .filter(Post.comments.any(comment_id=comment_id))
+        .one_or_none()
+    )
+
+
+def add_comment(
+    db: Session, current_post: Post, comment: str, current_user: InstagramUser
+) -> None:
+    current_post.comments.append(Comment(text=comment, user_id=current_user.id))
+    db.commit()
+
+
+def delete_comment(db: Session, current_post: Post, comment_id: int):
+    db.query(Comment).filter(Comment.post_id == current_post.id).filter(
+        Comment.id == comment_id
+    ).delete()
+    db.commit()
 
 
 def like_post_or_comment(

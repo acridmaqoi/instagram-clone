@@ -1,3 +1,5 @@
+from typing import List
+
 from app.database.core import Base
 from app.models import InstagramBase
 from pydantic import BaseModel, Field
@@ -58,12 +60,21 @@ class Like(Base):
     entity = relationship("LikeableEntity", back_populates="likes", uselist=False)
 
 
+class CommentCreate(InstagramBase):
+    text: str
+
+
+class CommentRead(InstagramBase):
+    text: str
+
+
 class PostBase(InstagramBase):
     caption: str
 
 
 class PostRead(PostBase):
     id: int
+    comments: List[CommentRead]
 
 
 class PostCreate(PostBase):

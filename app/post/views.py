@@ -1,11 +1,12 @@
 from app.auth.models import InstagramUser
 from app.auth.service import get_current_user
 from app.database.core import get_db
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from .models import Comment, Post, PostCreate, PostRead
 from .service import (
+    add_comment,
     create,
     delete,
     dislike_post_or_comment,
@@ -65,6 +66,34 @@ def delete_post(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     delete(db=db, post_id=current_post.id)
+
+
+@router.post("/{post_id}/comments")
+def comment(
+    comment: str = Body(..., embed=True),
+    current_post: Post = Depends(get_current_post),
+    current_user: InstagramUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    add_comment(
+        db=db, current_post=current_post, comment=comment, current_user=current_user
+    )
+
+
+@router.delete("/{post_id}/comments/{comment_id}")
+def delete_comment(
+    comment_id: int,
+    current_post: Post = Depends(get_current_post),
+    current_user: InstagramUser = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    comment = get_comment(db=db, current_post=current_post, comment_id=comment_id)
+    if comment is None:
+        raise HTTPException(404)
+    if comment.user_id != current_user.id:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+
+    delete_comment(db=db, current_post=current_post, comment_id=comment_id)
 
 
 @router.post("/{post_id}/likes")
