@@ -34,21 +34,21 @@ def get_current_user(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = get_user_by_email(db=db, email=email)
+    user = get_by_email(db=db, email=email)
     if user is None:
         raise credentials_exception
     return user
 
 
-def get_user(db: Session, user_id: int) -> Optional[InstagramUser]:
+def get(db: Session, user_id: int) -> Optional[InstagramUser]:
     return db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
 
 
-def get_user_by_email(db: Session, email: str) -> Optional[InstagramUser]:
+def get_by_email(db: Session, email: str) -> Optional[InstagramUser]:
     return db.query(InstagramUser).filter(InstagramUser.email == email).one_or_none()
 
 
-def create_user(db: Session, user_in: UserRegister):
+def create(db: Session, user_in: UserRegister):
     password = bytes(user_in.password, "utf-8")
 
     user = InstagramUser(**user_in.dict(exclude={"password"}), password=password)
