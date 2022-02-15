@@ -4,6 +4,7 @@ from app.database.core import Base
 from app.models import InstagramBase
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 
@@ -25,7 +26,7 @@ class Post(LikeableEntity):
     user_id = Column(Integer, ForeignKey("instagram_user.id"))
 
     user = relationship("InstagramUser", uselist=False)
-
+    likes = relationship("Like")
     comments = relationship(
         "Comment", back_populates="post", foreign_keys="Comment.post_id"
     )
@@ -33,6 +34,10 @@ class Post(LikeableEntity):
     __mapper_args__ = {
         "polymorphic_identity": "post",
     }
+
+    @hybrid_property
+    def like_count(self):
+        return self.likes.__len__()
 
 
 class Comment(LikeableEntity):
@@ -79,6 +84,7 @@ class PostBase(InstagramBase):
 class PostRead(PostBase):
     id: int
     comments: List[CommentRead]
+    like_count: int
 
 
 class PostCreate(PostBase):
