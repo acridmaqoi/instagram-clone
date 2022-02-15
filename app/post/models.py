@@ -1,5 +1,6 @@
 from typing import List
 
+from app.auth.models import UserRead
 from app.database.core import Base
 from app.models import InstagramBase
 from pydantic import BaseModel, Field
@@ -21,7 +22,7 @@ class LikeableEntity(Base):
 
     @hybrid_property
     def like_count(self):
-        return self.likes.__len__()
+        return len(self.likes)
 
 
 class Post(LikeableEntity):
@@ -37,6 +38,10 @@ class Post(LikeableEntity):
     __mapper_args__ = {
         "polymorphic_identity": "post",
     }
+
+    @hybrid_property
+    def comment_count(self):
+        return len(self.comments)
 
 
 class Comment(LikeableEntity):
@@ -74,6 +79,7 @@ class CommentCreate(InstagramBase):
 
 class CommentRead(InstagramBase):
     text: str
+    user: UserRead
 
 
 class PostBase(InstagramBase):
@@ -84,6 +90,7 @@ class PostRead(PostBase):
     id: int
     comments: List[CommentRead]
     like_count: int
+    comment_count: int
 
 
 class PostCreate(PostBase):
