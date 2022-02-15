@@ -6,8 +6,6 @@ from starlette.exceptions import HTTPException
 
 from app.api import api as api_router
 
-from .internal.database import Base, engine
-
 
 class BaseJSONResponse(JSONResponse):
     def render(self, content: typing.Any) -> bytes:
