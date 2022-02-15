@@ -15,8 +15,6 @@ from sqlalchemy.orm import sessionmaker
 from .database import Session
 from .factories import InstagramUserFactory
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 
 @pytest.fixture(scope="session")
 def db():
