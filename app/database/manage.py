@@ -5,14 +5,6 @@ from sqlalchemy_utils import create_database, database_exists
 from .core import Base
 
 
-def get_tables():
-    """Get all the tables in the application"""
-    tables = []
-    for _, table in Base.metadata.tables.items():
-        tables.append(table)
-    return tables
-
-
 def init_database(engine):
     """Initializes the database"""
     if not database_exists(str(config.SQLALCHEMY_DATABASE_URI)):
@@ -24,6 +16,6 @@ def init_database(engine):
         with engine.connect() as connection:
             connection.execute(CreateSchema(schema_name))
 
-    Base.metadata.create_all(engine, tables=get_tables())
+    Base.metadata.create_all(engine)
 
     # TODO additional initalization here as needed
