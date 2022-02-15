@@ -1,16 +1,8 @@
-from app import config
+from app import config, main  # noqa
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy_utils import create_database, database_exists
 
 from .core import Base
-
-
-def get_tables():
-    """Get all the tables in the application"""
-    tables = []
-    for _, table in Base.metadata.tables.items():
-        tables.append(table)
-    return tables
 
 
 def init_database(engine):
@@ -24,6 +16,12 @@ def init_database(engine):
         with engine.connect() as connection:
             connection.execute(CreateSchema(schema_name))
 
-    Base.metadata.create_all(engine, tables=get_tables())
+    schema_engine = engine.execution_options(
+        schema_translate_map={
+            None: "instagram_core",
+        }
+    )
+
+    Base.metadata.create_all(schema_engine)
 
     # TODO additional initalization here as needed

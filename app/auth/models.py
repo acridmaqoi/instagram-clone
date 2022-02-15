@@ -22,8 +22,6 @@ def hash_password(password: str):
 
 
 class InstagramUser(Base):
-    # __table_args__ = {"schema": "instagram_core"}
-
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
     username = Column(String, unique=True)
