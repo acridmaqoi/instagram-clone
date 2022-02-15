@@ -1,7 +1,7 @@
+from app.database.core import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..internal.database import get_db
 from .models import (
     InstagramUser,
     UserLogin,

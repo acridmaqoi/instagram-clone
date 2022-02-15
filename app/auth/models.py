@@ -62,7 +62,7 @@ class UserRegister(UserBase):
     password: str
 
     @validator("password", pre=True, always=True)
-    def password_required(cls, password):
+    def hash_password(cls, password):
         return hash_password(password)
 
 
