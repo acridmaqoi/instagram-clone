@@ -2,10 +2,10 @@ from app import config, main  # noqa
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy_utils import create_database, database_exists
 
-from .core import Base
+from .core import Base, schema_engine
 
 
-def init_database(engine):
+def init_database(engine=schema_engine):
     """Initializes the database"""
     if not database_exists(str(config.SQLALCHEMY_DATABASE_URI)):
         create_database(str(config.SQLALCHEMY_DATABASE_URI))
@@ -16,12 +16,6 @@ def init_database(engine):
         with engine.connect() as connection:
             connection.execute(CreateSchema(schema_name))
 
-    schema_engine = engine.execution_options(
-        schema_translate_map={
-            None: "instagram_core",
-        }
-    )
-
-    Base.metadata.create_all(schema_engine)
+    Base.metadata.create_all(engine)
 
     # TODO additional initalization here as needed

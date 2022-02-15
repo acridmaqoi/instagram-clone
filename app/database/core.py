@@ -4,11 +4,18 @@ import re
 from app import config
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 engine = create_engine(str(config.SQLALCHEMY_DATABASE_URI))
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# add correct schema mapping
+schema_engine = engine.execution_options(
+    schema_translate_map={
+        None: "instagram_core",
+    }
+)
+
+SessionLocal = scoped_session(sessionmaker(bind=schema_engine))
 
 
 def resolve_table_name(name):
