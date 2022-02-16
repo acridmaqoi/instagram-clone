@@ -88,5 +88,5 @@ def comment(db_session):
 
 
 @pytest.fixture
-def follow(db_sessio):
+def follow(db_session):
     return FollowFactory()

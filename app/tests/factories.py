@@ -60,8 +60,8 @@ class CommentFactory(BaseFactory):
 
 
 class FollowFactory(BaseFactory):
-    from_user_id = SubFactory(InstagramUserFactory)
-    to_user_id = SubFactory(InstagramUserFactory)
+    from_user = SubFactory(InstagramUserFactory)
+    to_user = SubFactory(InstagramUserFactory)
 
     class Meta:
         model = Follow

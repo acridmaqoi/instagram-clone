@@ -35,5 +35,9 @@ def test_follow_user(client: TestClient, instagram_users: List[InstagramUser]):
 
 
 def test_unfollow_user(client: TestClient, follow: Follow):
-    unfollow_res = client.post(f"/friendships/{follow.to_user_id}/unfollow")
+    unfollow_res = client.post(
+        f"/friendships/{follow.to_user_id}/unfollow",
+        headers={"Authorization": f"Bearer {follow.from_user.token}"},
+    )
+
     assert unfollow_res.status_code == status.HTTP_200_OK
