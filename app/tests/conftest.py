@@ -15,7 +15,13 @@ from app.database.manage import init_database
 from sqlalchemy.orm import sessionmaker
 
 from .database import Session
-from .factories import CommentFactory, InstagramUserFactory, LikeFactory, PostFactory
+from .factories import (
+    CommentFactory,
+    FollowFactory,
+    InstagramUserFactory,
+    LikeFactory,
+    PostFactory,
+)
 
 
 def get_user_authenticated_client(user: InstagramUser, db_session):
@@ -62,6 +68,11 @@ def instagram_user(db_session):
 
 
 @pytest.fixture
+def instagram_users(db_session):
+    return [InstagramUserFactory(), InstagramUserFactory()]
+
+
+@pytest.fixture
 def post(db_session):
     return PostFactory()
 
@@ -74,3 +85,8 @@ def like(db_session):
 @pytest.fixture
 def comment(db_session):
     return CommentFactory()
+
+
+@pytest.fixture
+def follow(db_sessio):
+    return FollowFactory()
