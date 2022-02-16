@@ -12,7 +12,7 @@ from sqlalchemy.orm import relationship
 
 SECRET_KEY = "c13836d0e76c81a92a65ebb2f00bdb19c058e799c658559a6a73918e689bc99e"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 480
+ACCESS_TOKEN_EXPIRE_DAYS = 60
 
 
 def hash_password(password: str):
@@ -35,7 +35,7 @@ class InstagramUser(Base):
     @property
     def token(self):
         now = datetime.utcnow()
-        exp = (now + timedelta(seconds=ACCESS_TOKEN_EXPIRE_MINUTES)).timestamp()
+        exp = (now + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)).timestamp()
         data = {
             "exp": exp,
             "email": self.email,

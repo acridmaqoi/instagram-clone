@@ -90,7 +90,10 @@ def delete_post_comment(
 ):
     comment = get_comment(db=db, current_post=current_post, comment_id=comment_id)
     if comment is None:
-        raise HTTPException(404)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Comment with id={comment_id} not found",
+        )
     if comment.user_id != current_user.id:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
