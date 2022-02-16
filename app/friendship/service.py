@@ -5,6 +5,10 @@ from .models import Follow
 
 
 def follow(db: Session, user: InstagramUser, current_user: InstagramUser) -> None:
+    if user.id == current_user.id:
+        # user cannot follow themselves
+        return
+
     # user can only follow once
     if (
         not db.query(Follow)
@@ -12,7 +16,7 @@ def follow(db: Session, user: InstagramUser, current_user: InstagramUser) -> Non
         .filter(Follow.to_user_id == user.id)
         .one_or_none()
     ):
-        follow = Follow(from_user_id=current_user.id, to_user_id=user_id)
+        follow = Follow(from_user_id=current_user.id, to_user_id=user.id)
         db.add(follow)
         db.commit()
 

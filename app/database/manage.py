@@ -19,3 +19,7 @@ def init_database(engine=schema_engine):
     Base.metadata.create_all(engine)
 
     # TODO additional initalization here as needed
+
+
+def update_database(engine=schema_engine):
+    Base.metadata.create_all(engine)

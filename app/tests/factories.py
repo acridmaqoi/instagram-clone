@@ -2,6 +2,7 @@ from typing import Sequence
 
 from app import main  # noqa
 from app.auth.models import InstagramUser, hash_password
+from app.friendship.models import Follow
 from app.post.models import Comment, Like, Post
 from factory import Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
@@ -56,3 +57,11 @@ class CommentFactory(BaseFactory):
 
     class Meta:
         model = Comment
+
+
+class FollowFactory(BaseFactory):
+    from_user_id = SubFactory(InstagramUserFactory)
+    to_user_id = SubFactory(InstagramUserFactory)
+
+    class Meta:
+        model = Follow
