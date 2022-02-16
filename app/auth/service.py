@@ -40,6 +40,17 @@ def get_current_user(
     return user
 
 
+def get_user(user_id: int, db: Session = Depends(get_db)) -> Optional[InstagramUser]:
+    user = get(db=db, user_id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id={user_id} not found",
+        )
+
+    return user
+
+
 def get(db: Session, user_id: int) -> Optional[InstagramUser]:
     return db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
 
