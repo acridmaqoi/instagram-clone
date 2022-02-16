@@ -1,10 +1,10 @@
 from typing import List
 
 from app.auth.models import UserRead
-from app.database.core import Base
+from app.database.core import Base, SessionLocal
 from app.models import InstagramBase
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -47,6 +47,15 @@ class Post(LikeableEntity):
         return len(self.comments)
 
 
+@event.listens_for(SessionLocal, "persistent_to_deleted")
+def delete_likeable_entity(session, object_):
+    # sqlalchemy doesn't support cascading polymorphic deletes
+    if not isinstance(object_, LikeableEntity):
+        return
+
+    session.query(LikeableEntity).filter(LikeableEntity.id == object_.id).delete()
+
+
 class Comment(LikeableEntity):
     id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
     text = Column(String, nullable=False)
@@ -69,7 +78,9 @@ class Comment(LikeableEntity):
 
 class Like(Base):
     id = Column(Integer, primary_key=True)
-    entity_id = Column(Integer, ForeignKey("likeable_entity.id"), nullable=False)
+    entity_id = Column(
+        Integer, ForeignKey("likeable_entity.id", ondelete="CASCADE"), nullable=False
+    )
     user_id = Column(Integer, ForeignKey("instagram_user.id"), nullable=False)
 
     user = relationship("InstagramUser", back_populates="likes", uselist=False)
