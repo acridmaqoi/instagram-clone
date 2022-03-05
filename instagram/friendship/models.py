@@ -1,5 +1,5 @@
-from app.database.core import Base
-from app.models import BaseModel
+from instagram.database.core import Base
+from instagram.models import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 

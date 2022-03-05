@@ -4,9 +4,9 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from app.auth.views import router as auth_router
-from app.friendship.views import router as friend_router
-from app.post.views import router as post_router
+from instagram.auth.views import router as auth_router
+from instagram.friendship.views import router as friend_router
+from instagram.post.views import router as post_router
 
 
 class ApiResponse(BaseModel):

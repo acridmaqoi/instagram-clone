@@ -1,9 +1,9 @@
 from typing import Sequence
 
-from app import main  # noqa
-from app.auth.models import InstagramUser, hash_password
-from app.friendship.models import Follow
-from app.post.models import Comment, Like, Post
+from instagram import main  # noqa
+from instagram.auth.models import InstagramUser, hash_password
+from instagram.friendship.models import Follow
+from instagram.post.models import Comment, Like, Post
 from factory import Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
 from factory.fuzzy import FuzzyText

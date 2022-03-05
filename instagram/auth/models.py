@@ -3,8 +3,8 @@ from enum import unique
 from typing import Optional
 
 import bcrypt
-from app.database.core import Base
-from app.models import InstagramBase
+from instagram.database.core import Base
+from instagram.models import InstagramBase
 from jose import jwt
 from pydantic import BaseModel, EmailStr, Field, validator
 from sqlalchemy import Column, Integer, LargeBinary, String

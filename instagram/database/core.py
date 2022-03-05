@@ -1,7 +1,7 @@
 import functools
 import re
 
-from app import config
+from instagram import config
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import scoped_session, sessionmaker

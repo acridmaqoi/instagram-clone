@@ -1,4 +1,4 @@
-from app.database.core import get_db
+from instagram.database.core import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 

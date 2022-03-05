@@ -1,6 +1,6 @@
-from app.auth.models import InstagramUser
-from app.auth.service import get_current_user
-from app.database.core import get_db
+from instagram.auth.models import InstagramUser
+from instagram.auth.service import get_current_user
+from instagram.database.core import get_db
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 

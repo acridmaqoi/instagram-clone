@@ -1,4 +1,4 @@
-from app import config, main  # noqa
+from instagram import config, main  # noqa
 from sqlalchemy.schema import CreateSchema
 from sqlalchemy_utils import create_database, database_exists
 

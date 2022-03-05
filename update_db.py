@@ -1,7 +1,7 @@
 from sqlalchemy_utils import drop_database
 
-from app import config
-from app.database.manage import update_database
+from instagram import config
+from instagram.database.manage import update_database
 
 drop_database(str(config.SQLALCHEMY_DATABASE_URI))
 

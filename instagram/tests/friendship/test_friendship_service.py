@@ -1,8 +1,8 @@
 from typing import List
 
-from app.auth.models import InstagramUser
-from app.friendship.models import Follow
-from app.tests.conftest import get_user_authenticated_client
+from instagram.auth.models import InstagramUser
+from instagram.friendship.models import Follow
+from instagram.tests.conftest import get_user_authenticated_client
 from fastapi import status
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session

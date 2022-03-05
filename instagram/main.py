@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse, PlainTextResponse
 from starlette.exceptions import HTTPException
 
-from app.api import api as api_router
+from instagram.api import api as api_router
 
 
 class BaseJSONResponse(JSONResponse):

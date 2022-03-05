@@ -1,9 +1,9 @@
 import json
 
 import pytest
-from app.auth.models import InstagramUser
-from app.post.models import Comment, Like, Post
-from app.tests.conftest import get_user_authenticated_client
+from instagram.auth.models import InstagramUser
+from instagram.post.models import Comment, Like, Post
+from instagram.tests.conftest import get_user_authenticated_client
 from fastapi import status
 from fastapi.testclient import TestClient
 

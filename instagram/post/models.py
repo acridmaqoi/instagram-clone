@@ -1,8 +1,8 @@
 from typing import List
 
-from app.auth.models import UserRead
-from app.database.core import Base, SessionLocal
-from app.models import InstagramBase
+from instagram.auth.models import UserRead
+from instagram.database.core import Base, SessionLocal
+from instagram.models import InstagramBase
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
 from sqlalchemy.ext.hybrid import hybrid_property

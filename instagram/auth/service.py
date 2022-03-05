@@ -2,8 +2,8 @@ import email
 from datetime import datetime, timedelta
 from typing import Optional
 
-from app.auth.models import InstagramUser
-from app.database.core import get_db
+from instagram.auth.models import InstagramUser
+from instagram.database.core import get_db
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
