@@ -1,6 +1,7 @@
 import typing
 
 from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from starlette.exceptions import HTTPException
 
@@ -19,6 +20,14 @@ class BaseJSONResponse(JSONResponse):
 app = FastAPI()
 
 api = FastAPI(default_response_class=BaseJSONResponse)
+
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @api.exception_handler(HTTPException)
