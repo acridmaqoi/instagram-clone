@@ -1,13 +1,14 @@
 from typing import Sequence
 
-from instagram import main  # noqa
-from instagram.auth.models import InstagramUser, hash_password
-from instagram.friendship.models import Follow
-from instagram.post.models import Comment, Like, Post
 from factory import Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
 from factory.fuzzy import FuzzyText
 from faker import Faker
+from instagram import main  # noqa
+from instagram.auth.models import InstagramUser, hash_password
+from instagram.friendship.models import Follow
+from instagram.like.models import Like
+from instagram.post.models import Comment, Post
 
 from .database import Session
 
