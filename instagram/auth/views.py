@@ -1,5 +1,5 @@
-from instagram.database.core import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
+from instagram.database.core import get_db
 from sqlalchemy.orm import Session
 
 from .models import (
@@ -21,6 +21,18 @@ def get_logged_in_user(
     db: Session = Depends(get_db),
 ):
     return current_user
+
+
+@router.get("/{user_id}", response_model=UserRead)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = get(db=db, user_id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=[{"msg": "The user with this id does not exist."}],
+        )
+
+    return user
 
 
 @router.post("/login", response_model=UserLoginResponse)
