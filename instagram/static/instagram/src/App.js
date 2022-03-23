@@ -7,6 +7,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import { setSession } from "./session";
 import { useStateValue } from "./StateProvider";
+import Upload from "./Upload";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
@@ -25,6 +26,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/:id" element={<Profile />} />
+            <Route path="/upload" element={<Upload />} />
           </Routes>
         </Router>
       ) : (
