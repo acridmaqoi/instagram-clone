@@ -1,7 +1,7 @@
 import React from "react";
 import { useStateValue } from "./StateProvider";
 
-function Dashboard() {
+function Home() {
   const [{ user }, dispatch] = useStateValue();
 
   const logOut = () => {
@@ -10,11 +10,11 @@ function Dashboard() {
   };
 
   return (
-    <div className="dashboard">
-      Dashboard
+    <div className="home">
+      Home
       <button onClick={logOut}>Logout</button>
     </div>
   );
 }
 
-export default Dashboard;
+export default Home;
