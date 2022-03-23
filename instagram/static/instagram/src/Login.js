@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import axios from "./axios";
+import { setSession } from "./session";
+import { useStateValue } from "./StateProvider";
 
 function Login() {
+  // const navigate = useNavigate();
   const [username, setUsername] = useState("");
+  const [{ user }, dispatch] = useStateValue();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const register = async (e) => {
+  const login = async (e) => {
     const response = await axios({
       method: "post",
       url: `/auth/login`,
@@ -16,7 +20,8 @@ function Login() {
         password: password,
       },
     }).then((res) => {
-      console.log(res);
+      localStorage.setItem("token", res.data.token);
+      setSession(dispatch);
     });
   };
 
@@ -43,7 +48,7 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       ></input>
 
-      <button onClick={register}>Register</button>
+      <button onClick={login}>Login</button>
     </div>
   );
 }
