@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "./Header";
 import { useStateValue } from "./StateProvider";
 
 function Home() {
@@ -12,7 +11,6 @@ function Home() {
 
   return (
     <div className="home">
-      <Header />
       Home
       <button onClick={logOut}>Logout</button>
     </div>
