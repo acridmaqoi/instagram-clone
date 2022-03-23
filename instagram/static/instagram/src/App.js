@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "./App.css";
-import Dashboard from "./Dashboard";
+import Home from "./Home";
 import Login from "./Login";
 import { setSession } from "./session";
 import { useStateValue } from "./StateProvider";
@@ -14,7 +14,7 @@ function App() {
     }
   }, []);
 
-  return <div className="app">{user ? <Dashboard /> : <Login />}</div>;
+  return <div className="app">{user ? <Home /> : <Login />}</div>;
 }
 
 export default App;
