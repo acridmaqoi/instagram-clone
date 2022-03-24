@@ -10,14 +10,24 @@ from .models import (
     UserRegister,
     UserRegisterResponse,
 )
-from .service import create, get, get_by_email, get_current_user
+from .service import create, get, get_authenticated_user, get_by_email, get_by_username
 
 router = APIRouter(prefix="/user", tags=["user"])
 
 
+def get_current_user(user_id: int, db: Session = Depends(get_db)):
+    user = get(db=db, user_id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id={user_id} not found",
+        )
+    return user
+
+
 @router.get("/current", response_model=UserRead)
-def get_logged_in_user(
-    current_user: InstagramUser = Depends(get_current_user),
+def get_current_in_user(
+    current_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
     return current_user
@@ -30,6 +40,18 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=[{"msg": "The user with this id does not exist."}],
+        )
+
+    return user
+
+
+@router.get("/username/{username}", response_model=UserRead)
+def get_user_by_username(username: str, db: Session = Depends(get_db)):
+    user = get_by_username(db=db, username=username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=[{"msg": "The user with this username does not exist."}],
         )
 
     return user

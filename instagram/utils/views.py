@@ -5,13 +5,13 @@ from botocore.client import Config
 from botocore.exceptions import ClientError
 from fastapi import APIRouter, Depends, HTTPException
 from instagram import config
-from instagram.user.service import get_current_user
+from instagram.user.service import get_authenticated_user
 
 router = APIRouter(prefix="/utils", tags=["utils"])
 
 
 @router.get("/s3url")
-def get_s3_url(current_user=Depends(get_current_user)):
+def get_s3_url(current_user=Depends(get_authenticated_user)):
     s3 = boto3.client("s3", config=Config(signature_version="s3v4"))
     image_name = str(uuid4())
 

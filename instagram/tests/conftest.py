@@ -9,7 +9,7 @@ environ[
 
 from instagram import config
 from instagram.user.models import InstagramUser
-from instagram.user.service import get_current_user
+from instagram.user.service import get_authenticated_user
 from instagram.database.core import engine
 from instagram.database.manage import init_database
 from sqlalchemy.orm import sessionmaker
@@ -29,7 +29,7 @@ def get_user_authenticated_client(user: InstagramUser, db_session):
     from instagram.main import api
 
     api.dependency_overrides[get_db] = lambda: db_session
-    api.dependency_overrides[get_current_user] = lambda: user
+    api.dependency_overrides[get_authenticated_user] = lambda: user
 
     return TestClient(api)
 

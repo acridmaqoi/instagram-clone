@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import List, Optional, Type
 
 from instagram.user.models import InstagramUser
 from sqlalchemy.orm import Session
@@ -20,6 +20,10 @@ def create(db: Session, post_in: PostCreate, user_id=int) -> Post:
 
 def get(db: Session, post_id: int) -> Optional[Post]:
     return db.query(Post).filter(Post.id == post_id).one_or_none()
+
+
+def get_all_for_user(db: Session, user_id: int) -> List[Post]:
+    return db.query(Post).filter(Post.user_id == user_id).all()
 
 
 def delete(db: Session, post_id: int) -> None:
