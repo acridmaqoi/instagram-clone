@@ -17,6 +17,7 @@ factory-boy = "*"
 faker = "*"
 requests = "*"
 sqlalchemy-utils = "*"
+boto3 = "*"
 
 [dev-packages]
 mypy = "*"
