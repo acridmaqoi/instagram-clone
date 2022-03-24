@@ -1,5 +1,5 @@
 import pytest
-from instagram.auth.models import InstagramUser
+from instagram.profile.models import InstagramUser
 from fastapi import status
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session

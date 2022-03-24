@@ -1,5 +1,6 @@
-from auth.models import InstagramUser
-from auth.service import get_current_user
+from profile.models import InstagramUser
+from profile.service import get_current_user
+
 from database.core import get_db
 from fastapi import APIRouter, Depends
 from instagram.post.views import get_current_post

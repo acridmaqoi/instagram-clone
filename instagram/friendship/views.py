@@ -1,5 +1,5 @@
-from instagram.auth.models import InstagramUser
-from instagram.auth.service import get_current_user, get_user
+from instagram.profile.models import InstagramUser
+from instagram.profile.service import get_current_user, get_user
 from instagram.database.core import get_db
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session

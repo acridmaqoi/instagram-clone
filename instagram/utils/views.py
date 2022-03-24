@@ -5,7 +5,7 @@ from botocore.client import Config
 from botocore.exceptions import ClientError
 from fastapi import APIRouter, Depends, HTTPException
 from instagram import config
-from instagram.auth.service import get_current_user
+from instagram.profile.service import get_current_user
 
 router = APIRouter(prefix="/utils", tags=["utils"])
 

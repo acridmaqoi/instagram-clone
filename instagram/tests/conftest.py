@@ -8,8 +8,8 @@ environ[
 ] = "postgresql://postgres:password@localhost:5433/instagram-test"
 
 from instagram import config
-from instagram.auth.models import InstagramUser
-from instagram.auth.service import get_current_user
+from instagram.profile.models import InstagramUser
+from instagram.profile.service import get_current_user
 from instagram.database.core import engine
 from instagram.database.manage import init_database
 from sqlalchemy.orm import sessionmaker

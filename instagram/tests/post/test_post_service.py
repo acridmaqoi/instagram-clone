@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from instagram.auth.models import InstagramUser
+from instagram.profile.models import InstagramUser
 from instagram.post.models import Comment, Like, Post
 from instagram.tests.conftest import get_user_authenticated_client
 from fastapi import status
