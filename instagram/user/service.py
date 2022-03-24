@@ -2,10 +2,10 @@ import email
 from datetime import datetime, timedelta
 from typing import Optional
 
-from instagram.auth.models import InstagramUser
-from instagram.database.core import get_db
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from instagram.database.core import get_db
+from instagram.user.models import InstagramUser
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
@@ -19,7 +19,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 480
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
-def get_current_user(
+def get_authenticated_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> InstagramUser:
     credentials_exception = HTTPException(
@@ -40,7 +40,9 @@ def get_current_user(
     return user
 
 
-def get_user(user_id: int, db: Session = Depends(get_db)) -> Optional[InstagramUser]:
+def get_current_user(
+    user_id: int, db: Session = Depends(get_db)
+) -> Optional[InstagramUser]:
     user = get(db=db, user_id=user_id)
     if not user:
         raise HTTPException(
@@ -53,6 +55,12 @@ def get_user(user_id: int, db: Session = Depends(get_db)) -> Optional[InstagramU
 
 def get(db: Session, user_id: int) -> Optional[InstagramUser]:
     return db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
+
+
+def get_by_username(db: Session, username: str) -> Optional[InstagramUser]:
+    return (
+        db.query(InstagramUser).filter(InstagramUser.username == username).one_or_none()
+    )
 
 
 def get_by_email(db: Session, email: str) -> Optional[InstagramUser]:

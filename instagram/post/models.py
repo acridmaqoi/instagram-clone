@@ -1,9 +1,9 @@
 from turtle import back
 from typing import List
 
-from instagram.auth.models import UserRead
 from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
+from instagram.user.models import UserRead
 from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -123,6 +123,11 @@ class PostRead(PostBase):
     comments: List[CommentRead]
     like_count: int
     comment_count: int
+
+
+class PostReadList(InstagramBase):
+    posts: List[PostRead]
+    count: int
 
 
 class PostCreate(PostBase):
