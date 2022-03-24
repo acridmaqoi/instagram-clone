@@ -12,7 +12,7 @@ from .models import (
 )
 from .service import create, get, get_authenticated_user, get_by_email, get_by_username
 
-router = APIRouter(prefix="/user", tags=["user"])
+router = APIRouter(prefix="/users", tags=["users"])
 
 
 def get_current_user(user_id: int, db: Session = Depends(get_db)):

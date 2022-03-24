@@ -27,17 +27,23 @@ class InstagramUser(Base):
     email = Column(String, unique=True)
     username = Column(String, unique=True)
     password = Column(LargeBinary, nullable=False)
+    name = Column(String)
 
+    posts = relationship("Post")
     likes = relationship("Like", back_populates="user")
     followers = relationship("Follow", foreign_keys="[Follow.to_user_id]")
     following = relationship("Follow", foreign_keys="[Follow.from_user_id]")
 
     @hybrid_property
-    def followers_count(self):
+    def post_count(self):
+        return len(self.posts)
+
+    @hybrid_property
+    def follower_count(self):
         return len(self.followers)
 
     @hybrid_property
-    def following_count(self):
+    def follow_count(self):
         return len(self.following)
 
     def check_password(self, password: str):
@@ -57,12 +63,14 @@ class InstagramUser(Base):
 class UserBase(InstagramBase):
     username: str
     email: EmailStr
+    name: Optional[str]
 
 
 class UserRead(UserBase):
     id: int
-    followers_count: int
-    following_count: int
+    post_count: int
+    follower_count: int
+    follow_count: int
 
 
 class UserLogin(UserBase):

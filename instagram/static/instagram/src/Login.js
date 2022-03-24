@@ -13,7 +13,7 @@ function Login() {
   const login = async (e) => {
     const response = await axios({
       method: "post",
-      url: `/user/login`,
+      url: `/users/login`,
       data: {
         username: username,
         email: email,
