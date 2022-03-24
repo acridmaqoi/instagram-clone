@@ -1,27 +1,40 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "./axios";
 
 function Upload() {
+  const navigate = useNavigate();
+
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState([]);
 
-  const uploadImage = async () => {
-    const url = await axios.get("/utils/s3url").then((res) => res.data.url);
+  const [caption, setCaption] = useState("");
 
-    var bodyFormData = new FormData();
-    bodyFormData.append("image", images[0]);
+  const uploadImages = async (e) => {
+    e.preventDefault();
 
-    await fetch(url, {
-      method: "PUT",
-      body: images[0],
-    });
+    // upload images to s3
+    let staticImageUrls = [];
+    for (const image of images) {
+      const url = await axios.get("/utils/s3url").then((res) => res.data.url);
 
-    const imageUrl = url.split("?")[0];
-    console.log(imageUrl);
+      await fetch(url, {
+        method: "PUT",
+        body: image,
+      });
 
-    const img = document.createElement("img");
-    img.src = imageUrl;
-    document.body.appendChild(img);
+      staticImageUrls.push(url.split("?")[0]);
+    }
+
+    // create post
+    axios
+      .post("/posts", {
+        caption: caption,
+        images: staticImageUrls.map((url) => ({ url: url })),
+      })
+      .then((res) => {
+        navigate(`/p/${res.data.id}`);
+      });
   };
 
   useEffect(() => {
@@ -42,7 +55,16 @@ function Upload() {
         <img src={imageSrc} />
       ))}
 
-      {images.length > 0 && <button onClick={uploadImage}>upload</button>}
+      {images.length > 0 && (
+        <form>
+          <input
+            type="text"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+          />
+          <button onClick={uploadImages}>upload</button>
+        </form>
+      )}
     </>
   );
 }
