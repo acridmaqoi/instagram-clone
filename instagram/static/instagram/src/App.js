@@ -4,9 +4,11 @@ import "./App.css";
 import Header from "./Header";
 import Home from "./Home";
 import Login from "./Login";
+import Post from "./Post";
 import Profile from "./Profile";
 import { setSession } from "./session";
 import { useStateValue } from "./StateProvider";
+import Upload from "./Upload";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
@@ -25,6 +27,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/:id" element={<Profile />} />
+            <Route path="/p/:id" element={<Post />} />
+            <Route path="/upload" element={<Upload />} />
           </Routes>
         </Router>
       ) : (

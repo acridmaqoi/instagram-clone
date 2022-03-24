@@ -3,11 +3,16 @@ from typing import Optional, Type
 from instagram.auth.models import InstagramUser
 from sqlalchemy.orm import Session
 
-from .models import Comment, Like, LikeableEntity, Post, PostCreate
+from .models import Comment, Image, Like, LikeableEntity, Post, PostCreate
 
 
 def create(db: Session, post_in: PostCreate, user_id=int) -> Post:
-    post = Post(**post_in.dict(), user_id=user_id)
+    # post = Post(**post_in.dict(), user_id=user_id)
+    post = Post(
+        caption=post_in.caption,
+        images=[Image(url=image.url) for image in post_in.images],
+        user_id=user_id,
+    )
     db.add(post)
     db.commit()
     return post
