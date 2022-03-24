@@ -1,7 +1,7 @@
 from typing import Optional, Type
 
-from profile.models import InstagramUser
-from instagram.profile.models import InstagramUser
+from user.models import InstagramUser
+from instagram.user.models import InstagramUser
 from post.models import Comment, Like, LikeableEntity, Post, PostCreate
 from sqlalchemy.orm import Session
 

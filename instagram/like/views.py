@@ -1,5 +1,5 @@
-from profile.models import InstagramUser
-from profile.service import get_current_user
+from user.models import InstagramUser
+from user.service import get_current_user
 
 from database.core import get_db
 from fastapi import APIRouter, Depends

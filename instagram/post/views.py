@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, status
-from instagram.profile.models import InstagramUser
-from instagram.profile.service import get_current_user
+from instagram.user.models import InstagramUser
+from instagram.user.service import get_current_user
 from instagram.database.core import get_db
 from sqlalchemy.orm import Session
 

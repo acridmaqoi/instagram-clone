@@ -1,7 +1,7 @@
 from turtle import back
 from typing import List
 
-from instagram.profile.models import UserRead
+from instagram.user.models import UserRead
 from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
 from pydantic import BaseModel, Field, HttpUrl

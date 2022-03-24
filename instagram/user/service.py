@@ -2,7 +2,7 @@ import email
 from datetime import datetime, timedelta
 from typing import Optional
 
-from instagram.profile.models import InstagramUser
+from instagram.user.models import InstagramUser
 from instagram.database.core import get_db
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer

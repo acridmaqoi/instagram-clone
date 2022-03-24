@@ -1,7 +1,7 @@
 import axios from "./axios";
 
 export const setSession = (dispatch) => {
-  axios.get("/profile/current").then((res) => {
+  axios.get("/user/current").then((res) => {
     // session is active
     dispatch({
       type: "SET_USER",

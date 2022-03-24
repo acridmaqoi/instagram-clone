@@ -1,4 +1,4 @@
-from instagram.profile.models import InstagramUser
+from instagram.user.models import InstagramUser
 from sqlalchemy.orm import Session
 
 from .models import Follow
