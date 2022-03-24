@@ -4,7 +4,6 @@ import axios from "./axios";
 
 function Post() {
   const { id: post_id } = useParams();
-
   const [post, setPost] = useState();
 
   useEffect(() => {
@@ -15,12 +14,13 @@ function Post() {
 
   return (
     <div className="post">
-      <div className="post__caption">{post?.caption}</div>
+      <div className="post__header">{post?.user.username}</div>
       <div className="post__images">
         {post?.images.map((image) => (
           <img src={image.url} alt="" />
         ))}
       </div>
+      <div className="post__caption">{post?.caption}</div>
     </div>
   );
 }
