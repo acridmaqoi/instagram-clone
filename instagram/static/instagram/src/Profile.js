@@ -28,16 +28,25 @@ function Profile() {
     <div className="profile">
       <div className="profile__header">
         <div className="profile__headerImage">
-          <Avatar />
+          <Avatar sx={{ height: "100px", width: "100px" }} />
         </div>
         <div className="profile__headerInfo">
           <div className="profile__title">{user?.username}</div>
           <div className="profile__stats">
-            <div className="profile__stat">{user?.post_count} Posts</div>
             <div className="profile__stat">
-              {user?.follower_count} Followers
+              <span className="profile__statNumber">{user?.post_count}</span>{" "}
+              Posts
             </div>
-            <div className="profile__stat">{user?.follow_count} Following</div>
+            <div className="profile__stat">
+              <span className="profile__statNumber">
+                {user?.follower_count}
+              </span>{" "}
+              Followers
+            </div>
+            <div className="profile__stat">
+              <span className="profile__statNumber">{user?.follow_count}</span>{" "}
+              Following
+            </div>
           </div>
           <div className="profile__desc">
             <div className="profile__name">{user?.name}</div>

@@ -12,15 +12,13 @@
 
 .profile__headerImage {
   margin-right: 30px;
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: stretch;
-  box-sizing: border-box;
+  cursor: pointer;
 }
 
 .profile__title {
   display: flex;
+  margin-bottom: 20px;
+  font-size: 24px;
 }
 
 .profile__stats {
@@ -32,7 +30,8 @@
   margin-right: 40px;
 }
 
-.profile__name {
+.profile__name,
+.profile__statNumber {
   font-weight: 600;
 }
 
