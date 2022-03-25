@@ -45,29 +45,16 @@ function Profile() {
         </div>
       </div>
 
-      <div className="profile_postsContainer">
-        {userPosts?.map((post, index) => {
-          if (!index % 3)
-            return (
-              <div className="profile__postsRow">
-                <img
-                  className="profile__postImage"
-                  onClick={(e) => navigate(`/p/${userPosts[index].id}`)}
-                  src={userPosts[index].images[0].url}
-                />
-                <img
-                  className="profile__postImage"
-                  onClick={(e) => navigate(`/p/${userPosts[index + 1].id}`)}
-                  src={userPosts[index + 1]?.images[0].url}
-                />
-                <img
-                  className="profile__postImage"
-                  onClick={(e) => navigate(`/p/${userPosts[index + 2].id}`)}
-                  src={userPosts[index + 2]?.images[0].url}
-                />
-              </div>
-            );
-        })}
+      <div className="profile__postsContainer">
+        {userPosts?.map((post, index) => (
+          <div className="profile__postItem">
+            <img
+              className="profile__postItem"
+              onClick={(e) => navigate(`/p/${post.id}`)}
+              src={post.images[0].url}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

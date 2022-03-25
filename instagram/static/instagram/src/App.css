@@ -1,9 +1,28 @@
 .app__mainContent {
-  margin-bottom: 16px;
-  margin-left: 61px;
-  margin-right: 61px;
-  padding-left: 20px;
-  padding-right: 20px;
+  -webkit-text-size-adjust: 100%;
+  --desktop-nav-height: 60px;
+  --in-feed-story-item-padding: 14px;
+  color: rgba(var(--i1d, 38, 38, 38), 1);
+  user-select: text !important;
+  font: inherit;
+  vertical-align: baseline;
+  -webkit-box-align: stretch;
+  align-items: stretch;
+  border: 0 solid #000;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  margin: 0 auto 30px;
+  max-width: 935px;
+  margin-bottom: 0;
+  box-sizing: content-box;
+  width: calc(100% - 40px);
+  padding: 30px 20px 0;
 }
 
 body {
