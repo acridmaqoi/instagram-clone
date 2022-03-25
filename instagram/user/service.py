@@ -77,7 +77,7 @@ def create(db: Session, user_in: UserRegister):
 
 
 def update(db: Session, user_in: UserUpdate, current_user: InstagramUser):
-    for k, v in user_in.dict().items():
+    for k, v in user_in.dict(exclude_unset=True).items():
         setattr(current_user, k, v)
         db.commit()
     return current_user
