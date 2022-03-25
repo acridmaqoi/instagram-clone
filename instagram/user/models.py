@@ -6,7 +6,7 @@ import bcrypt
 from instagram.database.core import Base
 from instagram.models import InstagramBase
 from jose import jwt
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
 from sqlalchemy import Column, Integer, LargeBinary, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -28,6 +28,7 @@ class InstagramUser(Base):
     username = Column(String, unique=True)
     password = Column(LargeBinary, nullable=False)
     name = Column(String)
+    picture_url = Column(String)
 
     posts = relationship("Post")
     likes = relationship("Like", back_populates="user")
@@ -64,6 +65,7 @@ class UserBase(InstagramBase):
     username: str
     email: EmailStr
     name: Optional[str]
+    picture_url: Optional[HttpUrl]
 
 
 class UserRead(UserBase):
@@ -71,6 +73,11 @@ class UserRead(UserBase):
     post_count: int
     follower_count: int
     follow_count: int
+
+
+class UserUpdate(InstagramBase):
+    name: Optional[str]
+    picture_url: Optional[HttpUrl]
 
 
 class UserLogin(UserBase):

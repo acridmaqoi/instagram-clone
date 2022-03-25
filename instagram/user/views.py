@@ -9,8 +9,16 @@ from .models import (
     UserRead,
     UserRegister,
     UserRegisterResponse,
+    UserUpdate,
 )
-from .service import create, get, get_authenticated_user, get_by_email, get_by_username
+from .service import (
+    create,
+    get,
+    get_authenticated_user,
+    get_by_email,
+    get_by_username,
+    update,
+)
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -31,6 +39,15 @@ def get_current_in_user(
     db: Session = Depends(get_db),
 ):
     return current_user
+
+
+@router.patch("/current", response_model=UserRead)
+def update_current_user(
+    user_in: UserUpdate,
+    current_user: InstagramUser = Depends(get_authenticated_user),
+    db: Session = Depends(get_db),
+):
+    return update(db=db, user_in=user_in, current_user=current_user)
 
 
 @router.get("/{user_id}", response_model=UserRead)
