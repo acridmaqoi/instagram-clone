@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "./axios";
+import s3StaticImageUpload from "./s3";
 
 function Upload() {
   const navigate = useNavigate();
@@ -12,19 +13,7 @@ function Upload() {
 
   const uploadImages = async (e) => {
     e.preventDefault();
-
-    // upload images to s3
-    let staticImageUrls = [];
-    for (const image of images) {
-      const url = await axios.get("/utils/s3url").then((res) => res.data.url);
-
-      await fetch(url, {
-        method: "PUT",
-        body: image,
-      });
-
-      staticImageUrls.push(url.split("?")[0]);
-    }
+    const staticImageUrls = await s3StaticImageUpload(images);
 
     // create post
     axios

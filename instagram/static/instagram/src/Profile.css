@@ -15,10 +15,26 @@
   cursor: pointer;
 }
 
+.profile__headerImage > input {
+  display: none;
+  cursor: pointer;
+}
+
+.profile__avatar {
+  cursor: pointer;
+}
+
 .profile__title {
   display: flex;
   margin-bottom: 20px;
   font-size: 24px;
+}
+
+.profile__imageButton {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
 .profile__stats {

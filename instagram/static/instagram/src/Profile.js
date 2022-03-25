@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "./axios";
 import "./Profile.css";
+import s3StaticImageUpload from "./s3";
 
 function Profile() {
   const navigate = useNavigate();
@@ -24,11 +25,40 @@ function Profile() {
     });
   }, []);
 
+  const updateUser = (user) => {
+    axios.patch(`/users/current`, user);
+  };
+
+  const onUpdateAvatar = async (e) => {
+    const urls = await s3StaticImageUpload([...e.target.files]);
+
+    let _user = { ...user };
+    _user.picture_url = urls[0];
+    updateUser(_user);
+    setUser(_user);
+  };
+
+  useEffect(() => {
+    console.log("USER ", user);
+  }, [user]);
+
   return (
     <div className="profile">
       <div className="profile__header">
         <div className="profile__headerImage">
-          <Avatar sx={{ height: "100px", width: "100px" }} />
+          <label for="avatar_upload">
+            <Avatar
+              className="profile__avatar"
+              src={user?.picture_url}
+              sx={{ height: "100px", width: "100px" }}
+            />
+          </label>
+          <input
+            id="avatar_upload"
+            type="file"
+            accept="image/*"
+            onChange={onUpdateAvatar}
+          />
         </div>
         <div className="profile__headerInfo">
           <div className="profile__title">{user?.username}</div>
@@ -53,7 +83,6 @@ function Profile() {
           </div>
         </div>
       </div>
-
       <div className="profile__postsContainer">
         {userPosts?.map((post, index) => (
           <div className="profile__postItem">
