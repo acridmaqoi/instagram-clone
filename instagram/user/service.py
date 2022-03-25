@@ -9,7 +9,7 @@ from instagram.user.models import InstagramUser
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from .models import InstagramUser, UserRegister
+from .models import InstagramUser, UserRegister, UserUpdate
 
 # TODO make env variables
 SECRET_KEY = "c13836d0e76c81a92a65ebb2f00bdb19c058e799c658559a6a73918e689bc99e"
@@ -74,3 +74,10 @@ def create(db: Session, user_in: UserRegister):
     db.add(user)
     db.commit()
     return user
+
+
+def update(db: Session, user_in: UserUpdate, current_user: InstagramUser):
+    for k, v in user_in.dict().items():
+        setattr(current_user, k, v)
+        db.commit()
+    return current_user

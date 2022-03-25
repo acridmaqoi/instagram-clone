@@ -65,7 +65,7 @@ class UserBase(InstagramBase):
     username: str
     email: EmailStr
     name: Optional[str]
-    picture_url: HttpUrl
+    picture_url: Optional[HttpUrl]
 
 
 class UserRead(UserBase):
@@ -73,6 +73,11 @@ class UserRead(UserBase):
     post_count: int
     follower_count: int
     follow_count: int
+
+
+class UserUpdate(InstagramBase):
+    name: Optional[str]
+    picture_url: Optional[HttpUrl]
 
 
 class UserLogin(UserBase):
