@@ -19,6 +19,7 @@
   flex: 0.3;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 .post__author,
@@ -34,6 +35,8 @@
   border: 1px solid #efefef;
   border-right: 0;
   border-top: 0;
+  align-items: center;
+  position: relative;
 }
 
 .post__comments {
@@ -46,4 +49,18 @@
 
 .post__addComment {
   border-bottom: 0;
+}
+
+.post__content {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.post__username {
+  margin-left: 10px;
+  font-weight: 600;
 }
