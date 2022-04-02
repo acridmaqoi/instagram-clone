@@ -22,10 +22,20 @@
   background-color: white;
 }
 
-.post__author,
-.post__actions,
-.post__addComment {
+.post__author {
   flex: 0.2;
+}
+
+.post__actions {
+  flex: 0.25;
+}
+
+.post__addComment {
+  flex: 0.1;
+}
+
+.post__comments {
+  flex: 0.45;
 }
 
 .post__author,
@@ -37,10 +47,6 @@
   border-top: 0;
   align-items: center;
   position: relative;
-}
-
-.post__comments {
-  flex: 0.4;
 }
 
 .post__author {
