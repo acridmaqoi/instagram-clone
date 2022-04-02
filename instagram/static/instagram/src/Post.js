@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "./axios";
+import "./Post.css";
 
 function Post() {
   const { id: post_id } = useParams();
@@ -14,13 +15,17 @@ function Post() {
 
   return (
     <div className="post">
-      <div className="post__header">{post?.user.username}</div>
-      <div className="post__images">
-        {post?.images.map((image) => (
-          <img src={image.url} alt="" />
-        ))}
+      <div className="post__container">
+        <div className="post__photo">
+          <img src={post?.images[0].url} />
+        </div>
+        <div className="post__info">
+          <div className="post__author">author</div>
+          <div className="post__comments">comments</div>
+          <div className="post__actions">actions</div>
+          <div className="post__addComment">add comment</div>
+        </div>
       </div>
-      <div className="post__caption">{post?.caption}</div>
     </div>
   );
 }
