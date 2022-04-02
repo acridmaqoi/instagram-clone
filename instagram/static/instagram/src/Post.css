@@ -1,5 +1,7 @@
 .post__container {
   display: flex;
+  min-height: 400px;
+  border: 1px solid #dbdbdb;
 }
 
 .post__photo {
@@ -8,6 +10,9 @@
 
 .post__photo > img {
   max-width: 100%;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .post__info {
@@ -22,6 +27,23 @@
   flex: 0.2;
 }
 
+.post__author,
+.post__actions,
+.post__comments,
+.post__addComment {
+  border: 1px solid #efefef;
+  border-right: 0;
+  border-top: 0;
+}
+
 .post__comments {
   flex: 0.4;
+}
+
+.post__author {
+  border-top: 0;
+}
+
+.post__addComment {
+  border-bottom: 0;
 }
