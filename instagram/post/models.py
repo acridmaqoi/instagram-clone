@@ -1,3 +1,5 @@
+from datetime import datetime
+from sqlite3 import Date
 from turtle import back
 from typing import List
 
@@ -5,7 +7,17 @@ from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
 from instagram.user.models import UserRead
 from pydantic import BaseModel, Field, HttpUrl
-from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
+from sqlalchemy import (
+    TIMESTAMP,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    delete,
+    event,
+    func,
+)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -38,6 +50,7 @@ class Post(LikeableEntity):
     id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
     caption = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("instagram_user.id"))
+    posted_at = Column(DateTime, server_default=func.now(), nullable=False)
 
     images = relationship("Image")
     user = relationship("InstagramUser", uselist=False)
@@ -120,6 +133,7 @@ class PostBase(InstagramBase):
 class PostRead(PostBase):
     id: int
     user: UserRead
+    posted_at: datetime
     comments: List[CommentRead]
     like_count: int
     comment_count: int

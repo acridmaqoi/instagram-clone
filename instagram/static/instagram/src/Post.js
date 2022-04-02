@@ -1,4 +1,10 @@
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import SendOutlined from "@mui/icons-material/SendOutlined";
 import { Avatar } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import { formatDistance } from "date-fns";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "./axios";
@@ -32,7 +38,32 @@ function Post() {
             <div className="post__content">comments</div>
           </div>
           <div className="post__actions">
-            <div className="post__content">actions</div>
+            <div className="post__content post--horizontal">
+              <div className="post__buttons">
+                <div className="post__buttonsLeft">
+                  <Grid container spacing={1}>
+                    <Grid item>
+                      <FavoriteBorderIcon />
+                    </Grid>
+                    <Grid item>
+                      <ChatBubbleOutlineIcon />
+                    </Grid>
+                    <Grid item>
+                      <SendOutlined />
+                    </Grid>
+                  </Grid>
+                </div>
+                <div className="post__buttonsRight">
+                  <BookmarkBorderOutlinedIcon />
+                </div>
+              </div>
+              <div className="post__date">
+                {post &&
+                  formatDistance(new Date(post?.posted_at), new Date(), {
+                    addSuffix: true,
+                  })}
+              </div>
+            </div>
           </div>
           <div className="post__addComment">
             <div className="post__content">add comment</div>

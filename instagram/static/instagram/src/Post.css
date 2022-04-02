@@ -47,6 +47,7 @@
   border-top: 0;
   align-items: center;
   position: relative;
+  display: flex;
 }
 
 .post__author {
@@ -69,4 +70,27 @@
 .post__username {
   margin-left: 10px;
   font-weight: 600;
+}
+
+.post__date {
+  color: #909090;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.post--horizontal {
+  flex-direction: column !important;
+}
+
+.post__buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post__buttonsLeft {
+  justify-content: space-between;
+}
+
+.post__buttonsRight {
+  justify-content: space-between;
 }
