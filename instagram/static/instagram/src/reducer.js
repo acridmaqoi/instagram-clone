@@ -1,13 +1,13 @@
 export const initalState = {
-  user: null,
+  current_user: null,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "SET_USER":
+    case "SET_CURRENT_USER":
       return {
         ...state,
-        user: action.user,
+        current_user: action.current_user,
       };
 
     default:

@@ -11,7 +11,7 @@ import { useStateValue } from "./StateProvider";
 import Upload from "./Upload";
 
 function App() {
-  const [{ user }, dispatch] = useStateValue();
+  const [{ current_user }, dispatch] = useStateValue();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="app">
-      {user ? (
+      {current_user ? (
         <Router>
           <Header />
           <div className="app__mainContent">
