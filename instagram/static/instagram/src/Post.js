@@ -57,6 +57,7 @@ function Post() {
                   <BookmarkBorderOutlinedIcon />
                 </div>
               </div>
+              <div className="post__likes">{post?.like_count} likes</div>
               <div className="post__date">
                 {post &&
                   formatDistance(new Date(post?.posted_at), new Date(), {
