@@ -9,7 +9,7 @@ import ListItem from "@mui/material/ListItem";
 import { formatDistance } from "date-fns";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "./axios";
 import "./Post.css";
 
@@ -29,11 +29,11 @@ function PostDialog(props) {
       <ListItem
         button
         style={{ color: "red" }}
-        onClick={() => handleListItemClick("addAccount")}
+        onClick={() => handleListItemClick("deletePost")}
       >
         Delete
       </ListItem>
-      <ListItem button onClick={() => handleListItemClick("addAccount")}>
+      <ListItem button onClick={() => handleListItemClick("cancel")}>
         Cancel
       </ListItem>
     </Dialog>
@@ -47,6 +47,7 @@ PostDialog.propTypes = {
 };
 
 function Post() {
+  const navigate = useNavigate();
   const { id: post_id } = useParams();
   const [post, setPost] = useState();
   const [open, setOpen] = useState(false);
@@ -60,7 +61,10 @@ function Post() {
 
   const handleClose = (value) => {
     setOpen(false);
-    console.log(value);
+    if (value === "deletePost") {
+      axios.delete(`/posts/${post_id}`);
+      navigate("/");
+    }
   };
 
   return (
