@@ -41,7 +41,7 @@ class LikeableEntity(Base):
 class Image(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String, nullable=False)
-    post_id = Column(Integer, ForeignKey("post.id"))
+    post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"))
 
     post = relationship("Post", uselist=False)
 
@@ -52,8 +52,8 @@ class Post(LikeableEntity):
     user_id = Column(Integer, ForeignKey("instagram_user.id"))
     posted_at = Column(DateTime, server_default=func.now(), nullable=False)
 
-    images = relationship("Image")
-    user = relationship("InstagramUser", uselist=False)
+    images = relationship("Image", cascade="all,delete", back_populates="post")
+    user = relationship("InstagramUser", uselist=False, back_populates="posts")
     comments = relationship(
         "Comment",
         back_populates="post",
