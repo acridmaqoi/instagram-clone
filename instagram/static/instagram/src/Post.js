@@ -29,7 +29,7 @@ function Post() {
         </div>
         <div className="post__info">
           <div className="post__author">
-            <div className="post__content">
+            <div className="post__content post--center">
               <Avatar src={post?.user.picture_url} />
               <div className="post__username">{post?.user.username}</div>
             </div>

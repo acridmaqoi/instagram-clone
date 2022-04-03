@@ -45,9 +45,7 @@
   border: 1px solid #efefef;
   border-right: 0;
   border-top: 0;
-  align-items: center;
   position: relative;
-  display: flex;
 }
 
 .post__author {
@@ -64,7 +62,8 @@
   transform: translateY(-50%);
   padding: 10px;
   display: flex;
-  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .post__username {
@@ -80,17 +79,14 @@
 
 .post--horizontal {
   flex-direction: column !important;
+  justify-content: space-between;
+}
+
+.post--center {
+  align-items: center;
 }
 
 .post__buttons {
   display: flex;
-  justify-content: space-between;
-}
-
-.post__buttonsLeft {
-  justify-content: space-between;
-}
-
-.post__buttonsRight {
   justify-content: space-between;
 }
