@@ -50,7 +50,9 @@ class Post(LikeableEntity):
     id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
     caption = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("instagram_user.id"))
-    posted_at = Column(DateTime, server_default=func.now(), nullable=False)
+    posted_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
 
     images = relationship("Image", cascade="all,delete", back_populates="post")
     user = relationship("InstagramUser", uselist=False, back_populates="posts")
