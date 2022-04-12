@@ -41,7 +41,7 @@ function Profile() {
     const urls = await s3StaticImageUpload([...e.target.files]);
 
     let _user = { ...user };
-    _user.picture_url = urls[0];
+    _user.pictureUrl = urls[0];
     updateUser(_user);
     setUser(_user);
     dispatch({ type: "SET_CURRENT_USER", current_user: _user });
@@ -59,7 +59,7 @@ function Profile() {
             <Avatar
               className="profile__avatar"
               style={{ cursor: `${isMe() ? "pointer" : "auto"}` }}
-              src={user?.picture_url}
+              src={user?.pictureUrl}
               sx={{ height: "100px", width: "100px" }}
             />
           </label>
@@ -93,17 +93,15 @@ function Profile() {
           </div>
           <div className="profile__stats">
             <div className="profile__stat">
-              <span className="profile__statNumber">{user?.post_count}</span>{" "}
+              <span className="profile__statNumber">{user?.postCount}</span>{" "}
               Posts
             </div>
             <div className="profile__stat">
-              <span className="profile__statNumber">
-                {user?.follower_count}
-              </span>{" "}
+              <span className="profile__statNumber">{user?.followerCount}</span>{" "}
               Followers
             </div>
             <div className="profile__stat">
-              <span className="profile__statNumber">{user?.follow_count}</span>{" "}
+              <span className="profile__statNumber">{user?.followCount}</span>{" "}
               Following
             </div>
           </div>

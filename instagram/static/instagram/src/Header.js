@@ -19,7 +19,7 @@ function Header() {
       <input placeholder="Search" type="text" />
 
       <Link to={`/${current_user.username}`}>
-        <Avatar src={current_user.picture_url} />
+        <Avatar src={current_user.pictureUrl} />
       </Link>
     </div>
   );

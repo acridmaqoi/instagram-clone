@@ -1,10 +1,9 @@
-from user.models import InstagramUser
-from user.service import get_authenticated_user
-
-from database.core import get_db
 from fastapi import APIRouter, Depends
+from instagram.database.core import get_db
+from instagram.post.models import Comment, Post, PostCreate, PostRead
 from instagram.post.views import get_current_post
-from post.models import Comment, Post, PostCreate, PostRead
+from instagram.user.models import InstagramUser
+from instagram.user.service import get_authenticated_user
 from sqlalchemy.orm import Session
 
 from .service import create, delete

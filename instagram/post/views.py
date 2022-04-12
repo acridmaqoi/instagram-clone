@@ -23,8 +23,12 @@ from .service import (
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 
-def get_current_post(post_id: int, db: Session = Depends(get_db)):
-    post = get(db=db, post_id=post_id)
+def get_current_post(
+    post_id: int,
+    current_user: InstagramUser = Depends(get_authenticated_user),
+    db: Session = Depends(get_db),
+):
+    post = get(db=db, post_id=post_id, current_user=current_user)
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -43,7 +47,10 @@ def create_post(
 
 
 @router.get("/{post_id}", response_model=PostRead)
-def get_post(post: Post = Depends(get_current_post), db: Session = Depends(get_db)):
+def get_post(
+    post: Post = Depends(get_current_post),
+    db: Session = Depends(get_db),
+):
     return post
 
 
@@ -53,7 +60,9 @@ def get_all_posts_for_user(
     authenticated_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    posts = get_all_for_user(user_id=current_user.id, db=db)
+    posts = get_all_for_user(
+        user_id=current_user.id, current_user=current_user.id, db=db
+    )
     return {"posts": posts, "count": len(posts)}
 
 

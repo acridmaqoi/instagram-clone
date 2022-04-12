@@ -1,5 +1,6 @@
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SendOutlined from "@mui/icons-material/SendOutlined";
@@ -67,6 +68,22 @@ function Post() {
     }
   };
 
+  const likePost = () => {
+    axios.post(`/likes/${post_id}`).then((res) => {
+      post.likeCount++;
+      post.hasLiked = true;
+      setPost({ ...post });
+    });
+  };
+
+  const dislikePost = () => {
+    axios.delete(`/likes/${post.id}`).then((res) => {
+      post.likeCount--;
+      post.hasLiked = false;
+      setPost({ ...post });
+    });
+  };
+
   return (
     <div className="post">
       <div className="post__container">
@@ -77,7 +94,7 @@ function Post() {
           <div className="post__author">
             <div className="post__content post--center">
               <div className="post__authorInfo">
-                <Avatar src={post?.user.picture_url} />
+                <Avatar src={post?.user.pictureUrl} />
                 <div className="post__username">{post?.user.username}</div>
               </div>
               <IconButton onClick={() => setOpen(true)}>
@@ -94,7 +111,14 @@ function Post() {
                 <div className="post__buttonsLeft">
                   <Grid container spacing={1}>
                     <Grid item>
-                      <FavoriteBorderIcon />
+                      {post?.hasLiked ? (
+                        <FavoriteIcon
+                          style={{ color: "#ED4956" }}
+                          onClick={() => dislikePost()}
+                        />
+                      ) : (
+                        <FavoriteBorderIcon onClick={() => likePost()} />
+                      )}
                     </Grid>
                     <Grid item>
                       <ChatBubbleOutlineIcon />
@@ -108,10 +132,10 @@ function Post() {
                   <BookmarkBorderOutlinedIcon />
                 </div>
               </div>
-              <div className="post__likes">{post?.like_count} likes</div>
+              <div className="post__likes">{post?.likeCount} likes</div>
               <div className="post__date">
                 {post &&
-                  formatDistance(new Date(post?.posted_at), new Date(), {
+                  formatDistance(new Date(post?.postedAt), new Date(), {
                     addSuffix: true,
                   })}
               </div>

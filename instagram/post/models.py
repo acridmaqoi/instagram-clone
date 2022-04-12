@@ -139,6 +139,7 @@ class PostRead(PostBase):
     comments: List[CommentRead]
     like_count: int
     comment_count: int
+    has_liked: bool
 
 
 class PostReadList(InstagramBase):

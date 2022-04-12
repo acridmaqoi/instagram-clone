@@ -18,12 +18,26 @@ def create(db: Session, post_in: PostCreate, user_id=int) -> Post:
     return post
 
 
-def get(db: Session, post_id: int) -> Optional[Post]:
-    return db.query(Post).filter(Post.id == post_id).one_or_none()
+def get(db: Session, current_user: InstagramUser, post_id: int) -> Optional[Post]:
+    post = db.query(Post).filter(Post.id == post_id).one_or_none()
+
+    if post:
+        post.has_liked = next(
+            (True for like in post.likes if like.user_id == current_user.id), False
+        )
+
+    return post
 
 
-def get_all_for_user(db: Session, user_id: int) -> List[Post]:
-    return db.query(Post).filter(Post.user_id == user_id).all()
+def get_all_for_user(
+    db: Session, current_user: InstagramUser, user_id: int
+) -> List[Post]:
+    posts = db.query(Post).filter(Post.user_id == user_id).all()
+    for post in posts:
+        post.has_liked = next(
+            (True for like in post.likes if like.user_id == current_user.id), False
+        )
+    return posts
 
 
 def delete(db: Session, post_id: int) -> None:
