@@ -43,7 +43,15 @@ def create_post(
 
 
 @router.get("/{post_id}", response_model=PostRead)
-def get_post(post: Post = Depends(get_current_post), db: Session = Depends(get_db)):
+def get_post(
+    post: Post = Depends(get_current_post),
+    user: InstagramUser = Depends(get_authenticated_user),
+    db: Session = Depends(get_db),
+):
+    post.has_liked = next(
+        (True for like in post.likes if like.user_id == user.id), False
+    )
+
     return post
 
 

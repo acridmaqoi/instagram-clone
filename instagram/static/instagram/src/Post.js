@@ -1,5 +1,6 @@
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SendOutlined from "@mui/icons-material/SendOutlined";
@@ -69,7 +70,17 @@ function Post() {
 
   const likePost = () => {
     axios.post(`/likes/${post_id}`).then((res) => {
-      let _post = { ...post };
+      post.likeCount++;
+      post.hasLiked = true;
+      setPost({ ...post });
+    });
+  };
+
+  const dislikePost = () => {
+    axios.delete(`/likes/${post.id}`).then((res) => {
+      post.likeCount--;
+      post.hasLiked = false;
+      setPost({ ...post });
     });
   };
 
@@ -100,7 +111,14 @@ function Post() {
                 <div className="post__buttonsLeft">
                   <Grid container spacing={1}>
                     <Grid item>
-                      <FavoriteBorderIcon onClick={() => likePost()} />
+                      {post?.hasLiked ? (
+                        <FavoriteIcon
+                          style={{ color: "#ED4956" }}
+                          onClick={() => dislikePost()}
+                        />
+                      ) : (
+                        <FavoriteBorderIcon onClick={() => likePost()} />
+                      )}
                     </Grid>
                     <Grid item>
                       <ChatBubbleOutlineIcon />
