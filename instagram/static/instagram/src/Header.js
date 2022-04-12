@@ -5,7 +5,7 @@ import "./Header.css";
 import { useStateValue } from "./StateProvider";
 
 function Header() {
-  const [{ user }, dispatch] = useStateValue();
+  const [{ current_user }, dispatch] = useStateValue();
 
   return (
     <div className="header">
@@ -18,8 +18,8 @@ function Header() {
 
       <input placeholder="Search" type="text" />
 
-      <Link to={`/${user.username}`}>
-        <Avatar />
+      <Link to={`/${current_user.username}`}>
+        <Avatar src={current_user.picture_url} />
       </Link>
     </div>
   );

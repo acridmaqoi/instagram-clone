@@ -2,11 +2,11 @@ import React from "react";
 import { useStateValue } from "./StateProvider";
 
 function Home() {
-  const [{ user }, dispatch] = useStateValue();
+  const [{ current_user }, dispatch] = useStateValue();
 
   const logOut = () => {
     localStorage.removeItem("token");
-    dispatch({ type: "SET_USER", value: null });
+    dispatch({ type: "SET_CURRENT_USER", value: null });
   };
 
   return (

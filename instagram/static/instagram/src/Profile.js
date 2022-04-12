@@ -1,16 +1,24 @@
 import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "./axios";
 import "./Profile.css";
 import s3StaticImageUpload from "./s3";
+import { useStateValue } from "./StateProvider";
 
 function Profile() {
   const navigate = useNavigate();
 
+  const [{ current_user }, dispatch] = useStateValue();
+
   const { id: username } = useParams();
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
+
+  const isMe = () => {
+    return current_user?.username === user?.username;
+  };
 
   useEffect(() => {
     axios.get(`/users/username/${username}`).then((res) => {
@@ -36,6 +44,7 @@ function Profile() {
     _user.picture_url = urls[0];
     updateUser(_user);
     setUser(_user);
+    dispatch({ type: "SET_CURRENT_USER", current_user: _user });
   };
 
   useEffect(() => {
@@ -49,19 +58,39 @@ function Profile() {
           <label for="avatar_upload">
             <Avatar
               className="profile__avatar"
+              style={{ cursor: `${isMe() ? "pointer" : "auto"}` }}
               src={user?.picture_url}
               sx={{ height: "100px", width: "100px" }}
             />
           </label>
-          <input
-            id="avatar_upload"
-            type="file"
-            accept="image/*"
-            onChange={onUpdateAvatar}
-          />
+          {isMe() && (
+            <input
+              id="avatar_upload"
+              type="file"
+              accept="image/*"
+              onChange={onUpdateAvatar}
+            />
+          )}
         </div>
         <div className="profile__headerInfo">
-          <div className="profile__title">{user?.username}</div>
+          <div className="profile__main">
+            <div className="profile__title">{user?.username}</div>
+            <div className="profile__actions">
+              {!isMe() ? (
+                <Button
+                  size="small"
+                  variant="contained"
+                  style={{ fontWeight: "600" }}
+                >
+                  Follow
+                </Button>
+              ) : (
+                <Button size="small" variant="outlined" color="secondary">
+                  Edit Profile
+                </Button>
+              )}
+            </div>
+          </div>
           <div className="profile__stats">
             <div className="profile__stat">
               <span className="profile__statNumber">{user?.post_count}</span>{" "}

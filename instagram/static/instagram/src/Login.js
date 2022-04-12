@@ -6,7 +6,7 @@ import { useStateValue } from "./StateProvider";
 function Login() {
   // const navigate = useNavigate();
   const [username, setUsername] = useState("");
-  const [{ user }, dispatch] = useStateValue();
+  const [{ current_user }, dispatch] = useStateValue();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
