@@ -140,6 +140,7 @@ class PostRead(PostBase):
     like_count: int
     comment_count: int
     has_liked: bool
+    has_saved: bool
 
 
 class PostReadList(InstagramBase):

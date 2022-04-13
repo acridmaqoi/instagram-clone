@@ -31,6 +31,7 @@ class InstagramUser(Base):
     picture_url = Column(String)
 
     posts = relationship("Post")
+    saved_posts = relationship("Save")
     likes = relationship("Like", back_populates="user")
     followers = relationship("Follow", foreign_keys="[Follow.to_user_id]")
     following = relationship("Follow", foreign_keys="[Follow.from_user_id]")

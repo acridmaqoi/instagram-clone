@@ -43,7 +43,7 @@ def create_post(
     user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    return create(db=db, post_in=post_in, user_id=user.id)
+    return create(db=db, post_in=post_in, current_user=user)
 
 
 @router.get("/{post_id}", response_model=PostRead)
