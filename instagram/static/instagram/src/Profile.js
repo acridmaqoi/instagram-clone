@@ -1,10 +1,12 @@
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import axios from "./axios";
+import PostGrid from "./PostGrid";
 import "./Profile.css";
 import s3StaticImageUpload from "./s3";
+import SavedPosts from "./SavedPosts";
 import { useStateValue } from "./StateProvider";
 
 function Profile() {
@@ -110,8 +112,12 @@ function Profile() {
           </div>
         </div>
       </div>
-      <div className="profile__postsContainer">
-        {userPosts?.map((post, index) => (
+
+      <Routes>
+        <Route path="/" element={<PostGrid posts={userPosts} />} />
+        <Route path="/saved" element={<SavedPosts />} />
+      </Routes>
+      {/* {userPosts?.map((post, index) => (
           <div className="profile__postItem">
             <img
               className="profile__postItem"
@@ -119,8 +125,7 @@ function Profile() {
               src={post.images[0].url}
             />
           </div>
-        ))}
-      </div>
+        ))} */}
     </div>
   );
 }
