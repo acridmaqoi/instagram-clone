@@ -4,7 +4,7 @@ import re
 from instagram import config
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, session, sessionmaker
 
 engine = create_engine(str(config.SQLALCHEMY_DATABASE_URI))
 
@@ -15,7 +15,7 @@ schema_engine = engine.execution_options(
     }
 )
 
-SessionLocal = scoped_session(sessionmaker(bind=schema_engine))
+SessionLocal = sessionmaker(bind=schema_engine)
 
 
 def resolve_table_name(name):
