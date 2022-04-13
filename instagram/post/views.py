@@ -60,9 +60,7 @@ def get_all_posts_for_user(
     authenticated_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    posts = get_all_for_user(
-        user_id=current_user.id, current_user=current_user.id, db=db
-    )
+    posts = get_all_for_user(user_id=current_user.id, current_user=current_user, db=db)
     return {"posts": posts, "count": len(posts)}
 
 
