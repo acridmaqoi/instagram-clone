@@ -59,17 +59,17 @@ function Post() {
   useEffect(() => {
     axios.get(`/posts/${post_id}`).then((res) => {
       console.log(res.data);
-      setPost(res.data);
-    });
-  }, []);
 
-  useEffect(() => {
-    if (post) {
-      axios.get(`/posts?user_id=${post?.user.id}`).then((res) => {
-        setRelatedPosts(res.data.posts);
-      });
-    }
-  }, [post]);
+      const _post = res.data;
+      setPost(_post);
+
+      axios
+        .get(`/posts?user_id=${_post?.user.id}&exclude_post=${_post?.id}`)
+        .then((res) => {
+          setRelatedPosts(res.data.posts);
+        });
+    });
+  }, [post_id]);
 
   const handleClose = (value) => {
     setOpen(false);
@@ -184,8 +184,8 @@ function Post() {
       <div className="post__suggested">
         <div className="post__suggestedTitle">
           More posts from {post?.user.username}
-          <PostGrid posts={relatedPosts} />
         </div>
+        <PostGrid posts={relatedPosts} />
       </div>
     </div>
   );
