@@ -18,10 +18,10 @@ def create_follow(
     create(db=db, from_user=from_user, to_user=to_user)
 
 
-@router.post("/{user_id}")
+@router.delete("/{user_id}")
 def delete_follow(
-    user: InstagramUser = Depends(get_current_user),
-    current_user: InstagramUser = Depends(get_authenticated_user),
+    from_user: InstagramUser = Depends(get_authenticated_user),
+    to_user: InstagramUser = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    delete(db=db, user=user, current_user=current_user)
+    delete(db=db, from_user=from_user, to_user=to_user)
