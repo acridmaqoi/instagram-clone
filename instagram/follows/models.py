@@ -5,9 +5,8 @@ from sqlalchemy.orm import relationship
 
 
 class Follow(Base):
-    id = Column(Integer, primary_key=True)
-    from_user_id = Column(Integer, ForeignKey("instagram_user.id"))
-    to_user_id = Column(Integer, ForeignKey("instagram_user.id"))
+    from_user_id = Column(Integer, ForeignKey("instagram_user.id"), primary_key=True)
+    to_user_id = Column(Integer, ForeignKey("instagram_user.id"), primary_key=True)
 
     from_user = relationship(
         "InstagramUser",
