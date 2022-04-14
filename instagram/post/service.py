@@ -38,9 +38,14 @@ def get(db: Session, current_user: InstagramUser, post_id: int) -> Optional[Post
 
 
 def get_all_for_user(
-    db: Session, current_user: InstagramUser, user_id: int
+    db: Session, current_user: InstagramUser, user_id: int, exclude_posts_ids: List[int]
 ) -> List[Post]:
-    posts = db.query(Post).filter(Post.user_id == user_id).all()
+    posts = (
+        db.query(Post)
+        .filter(Post.user_id == user_id)
+        .filter(Post.id.not_in([id for id in exclude_posts_ids]))
+        .all()
+    )
     for post in posts:
         add_user_meta(post=post, current_user=current_user)
 

@@ -49,13 +49,15 @@
 
 .profile__postsContainer {
   display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   grid-template-columns: repeat(3, 1fr);
 }
 
 .profile__postItem {
   position: relative;
   flex: 1 0 22rem;
-  margin: 1rem;
   cursor: pointer;
   width: auto;
 }

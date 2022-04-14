@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from instagram.database.core import get_db
 from instagram.user.models import InstagramUser
 from instagram.user.service import get_authenticated_user
@@ -58,9 +58,15 @@ def get_post(
 def get_all_posts_for_user(
     current_user: InstagramUser = Depends(get_current_user),
     authenticated_user: InstagramUser = Depends(get_authenticated_user),
+    exclude_posts_ids: List[int] = Query([], alias="exclude_post"),
     db: Session = Depends(get_db),
 ):
-    posts = get_all_for_user(user_id=current_user.id, current_user=current_user, db=db)
+    posts = get_all_for_user(
+        user_id=current_user.id,
+        current_user=current_user,
+        exclude_posts_ids=exclude_posts_ids,
+        db=db,
+    )
     return {"posts": posts, "count": len(posts)}
 
 

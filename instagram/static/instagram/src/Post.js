@@ -5,7 +5,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SendOutlined from "@mui/icons-material/SendOutlined";
-import { Avatar, Dialog, IconButton } from "@mui/material";
+import { Avatar, Dialog, Divider, IconButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import ListItem from "@mui/material/ListItem";
 import { formatDistance } from "date-fns";
@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "./axios";
 import "./Post.css";
+import PostGrid from "./PostGrid";
 
 function PostDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -52,14 +53,23 @@ function Post() {
   const navigate = useNavigate();
   const { id: post_id } = useParams();
   const [post, setPost] = useState();
+  const [relatedPosts, setRelatedPosts] = useState();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     axios.get(`/posts/${post_id}`).then((res) => {
       console.log(res.data);
-      setPost(res.data);
+
+      const _post = res.data;
+      setPost(_post);
+
+      axios
+        .get(`/posts?user_id=${_post?.user.id}&exclude_post=${_post?.id}`)
+        .then((res) => {
+          setRelatedPosts(res.data.posts);
+        });
     });
-  }, []);
+  }, [post_id]);
 
   const handleClose = (value) => {
     setOpen(false);
@@ -165,6 +175,18 @@ function Post() {
           </div>
         </div>
         <PostDialog selectedValue={"add"} open={open} onClose={handleClose} />
+      </div>
+
+      <div className="post__divider">
+        <Divider />
+      </div>
+
+      <div className="post__suggested">
+        <div className="post__suggestedTitle">
+          More posts from{" "}
+          <span style={{ color: "black" }}>{post?.user.username}</span>
+        </div>
+        <PostGrid posts={relatedPosts} />
       </div>
     </div>
   );
