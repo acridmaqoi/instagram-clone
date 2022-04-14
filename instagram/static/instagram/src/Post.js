@@ -183,7 +183,8 @@ function Post() {
 
       <div className="post__suggested">
         <div className="post__suggestedTitle">
-          More posts from {post?.user.username}
+          More posts from{" "}
+          <span style={{ color: "black" }}>{post?.user.username}</span>
         </div>
         <PostGrid posts={relatedPosts} />
       </div>
