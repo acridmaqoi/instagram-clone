@@ -4,7 +4,14 @@ import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
-import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import axios from "./axios";
 import PostGrid from "./PostGrid";
 import "./Profile.css";
@@ -14,6 +21,7 @@ import { useStateValue } from "./StateProvider";
 
 function Profile() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [{ current_user }, dispatch] = useStateValue();
 
@@ -122,14 +130,36 @@ function Profile() {
       </div>
 
       <div className="profile__pages">
-        <Link to=".">
-          <GridViewIcon />
-          Posts
-        </Link>
-        <Link to="./saved">
-          <BookmarkBorderIcon />
-          Saved
-        </Link>
+        <div className="profile__page">
+          <Link to=".">
+            <div
+              className="profile__pageIcon"
+              style={
+                location.pathname === `/${current_user.username}`
+                  ? { color: "black" }
+                  : {}
+              }
+            >
+              <GridViewIcon />
+              Posts
+            </div>
+          </Link>
+        </div>
+        <div className="profile__page">
+          <Link to="./saved">
+            <div
+              className="profile__pageIcon"
+              style={
+                location.pathname === `/${current_user.username}/saved`
+                  ? { color: "black" }
+                  : {}
+              }
+            >
+              <BookmarkBorderIcon />
+              Saved
+            </div>
+          </Link>
+        </div>
       </div>
 
       <Routes>
