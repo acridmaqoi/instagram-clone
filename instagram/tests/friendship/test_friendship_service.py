@@ -1,7 +1,7 @@
 from typing import List
 
 from instagram.user.models import InstagramUser
-from instagram.friendship.models import Follow
+from instagram.follows.models import Follow
 from instagram.tests.conftest import get_user_authenticated_client
 from fastapi import status
 from fastapi.testclient import TestClient
