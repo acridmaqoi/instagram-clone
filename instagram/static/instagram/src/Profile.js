@@ -1,14 +1,27 @@
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import GridViewIcon from "@mui/icons-material/GridView";
+import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import axios from "./axios";
+import PostGrid from "./PostGrid";
 import "./Profile.css";
 import s3StaticImageUpload from "./s3";
+import SavedPosts from "./SavedPosts";
 import { useStateValue } from "./StateProvider";
 
 function Profile() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [{ current_user }, dispatch] = useStateValue();
 
@@ -109,9 +122,51 @@ function Profile() {
             <div className="profile__name">{user?.name}</div>
           </div>
         </div>
+        <Divider />
       </div>
-      <div className="profile__postsContainer">
-        {userPosts?.map((post, index) => (
+
+      <div className="profile__divider">
+        <Divider />
+      </div>
+
+      <div className="profile__pages">
+        <div className="profile__page">
+          <Link to=".">
+            <div
+              className="profile__pageIcon"
+              style={
+                location.pathname === `/${current_user.username}`
+                  ? { color: "black" }
+                  : {}
+              }
+            >
+              <GridViewIcon />
+              Posts
+            </div>
+          </Link>
+        </div>
+        <div className="profile__page">
+          <Link to="./saved">
+            <div
+              className="profile__pageIcon"
+              style={
+                location.pathname === `/${current_user.username}/saved`
+                  ? { color: "black" }
+                  : {}
+              }
+            >
+              <BookmarkBorderIcon />
+              Saved
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      <Routes>
+        <Route path="/" element={<PostGrid posts={userPosts} />} />
+        <Route path="/saved" element={<SavedPosts />} />
+      </Routes>
+      {/* {userPosts?.map((post, index) => (
           <div className="profile__postItem">
             <img
               className="profile__postItem"
@@ -119,8 +174,7 @@ function Profile() {
               src={post.images[0].url}
             />
           </div>
-        ))}
-      </div>
+        ))} */}
     </div>
   );
 }

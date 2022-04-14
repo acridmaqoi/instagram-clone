@@ -70,3 +70,35 @@
   display: flex;
   justify-content: space-between;
 }
+
+.profile__divider {
+  margin-bottom: 20px;
+}
+
+.profile__pages {
+  text-align: center;
+}
+
+.profile__page {
+  display: inline-block;
+  margin-right: 40px;
+}
+
+.profile__page > a {
+  text-decoration: none;
+  color: #8e8e8e;
+}
+
+.profile__pageIcon {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: small;
+}
+
+.profile__pageIcon > .MuiSvgIcon-root {
+  font-size: large !important;
+  margin-right: 5px;
+}

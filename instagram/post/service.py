@@ -6,25 +6,33 @@ from sqlalchemy.orm import Session
 from .models import Comment, Image, Like, LikeableEntity, Post, PostCreate
 
 
-def create(db: Session, post_in: PostCreate, user_id=int) -> Post:
-    # post = Post(**post_in.dict(), user_id=user_id)
+def add_user_meta(post: Post, current_user: InstagramUser) -> None:
+    post.has_liked = next(
+        (True for like in post.likes if like.user_id == current_user.id), False
+    )
+    post.has_saved = next(
+        (True for save in current_user.saved_posts if save.post_id == post.id),
+        False,
+    )
+
+
+def create(db: Session, post_in: PostCreate, current_user: InstagramUser) -> Post:
     post = Post(
         caption=post_in.caption,
         images=[Image(url=image.url) for image in post_in.images],
-        user_id=user_id,
+        user_id=current_user.id,
     )
     db.add(post)
     db.commit()
+
+    add_user_meta(post=post, current_user=current_user)
     return post
 
 
 def get(db: Session, current_user: InstagramUser, post_id: int) -> Optional[Post]:
     post = db.query(Post).filter(Post.id == post_id).one_or_none()
-
     if post:
-        post.has_liked = next(
-            (True for like in post.likes if like.user_id == current_user.id), False
-        )
+        add_user_meta(post=post, current_user=current_user)
 
     return post
 
@@ -34,9 +42,8 @@ def get_all_for_user(
 ) -> List[Post]:
     posts = db.query(Post).filter(Post.user_id == user_id).all()
     for post in posts:
-        post.has_liked = next(
-            (True for like in post.likes if like.user_id == current_user.id), False
-        )
+        add_user_meta(post=post, current_user=current_user)
+
     return posts
 
 

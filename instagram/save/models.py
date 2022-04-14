@@ -7,4 +7,4 @@ class Save(Base):
     post_id = Column(Integer, ForeignKey("post.id"), primary_key=True)
     user_id = Column(Integer, ForeignKey("instagram_user.id"), primary_key=True)
 
-    post = relationship("Post", uselist=False)
+    user = relationship("InstagramUser", uselist=False, back_populates="saved_posts")

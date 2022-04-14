@@ -45,7 +45,7 @@ function App() {
             <div className="app__mainContent">
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/:id" element={<Profile />} />
+                <Route path="/:id/*" element={<Profile />} />
                 <Route path="/p/:id" element={<Post />} />
                 <Route path="/upload" element={<Upload />} />
               </Routes>
