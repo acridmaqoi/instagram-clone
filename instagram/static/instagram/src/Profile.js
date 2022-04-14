@@ -1,7 +1,10 @@
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import GridViewIcon from "@mui/icons-material/GridView";
+import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
-import { Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import axios from "./axios";
 import PostGrid from "./PostGrid";
 import "./Profile.css";
@@ -111,6 +114,22 @@ function Profile() {
             <div className="profile__name">{user?.name}</div>
           </div>
         </div>
+        <Divider />
+      </div>
+
+      <div className="profile__divider">
+        <Divider />
+      </div>
+
+      <div className="profile__pages">
+        <Link to=".">
+          <GridViewIcon />
+          Posts
+        </Link>
+        <Link to="./saved">
+          <BookmarkBorderIcon />
+          Saved
+        </Link>
       </div>
 
       <Routes>

@@ -70,3 +70,7 @@
   display: flex;
   justify-content: space-between;
 }
+
+.profile__divider {
+  margin-bottom: 10px;
+}
