@@ -45,7 +45,7 @@ class InstagramUser(Base):
         return len(self.followers)
 
     @hybrid_property
-    def follow_count(self):
+    def following_count(self):
         return len(self.following)
 
     def check_password(self, password: str):
@@ -73,7 +73,7 @@ class UserRead(UserBase):
     id: int
     post_count: int
     follower_count: int
-    follow_count: int
+    following_count: int
 
 
 class UserUpdate(InstagramBase):
