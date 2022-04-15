@@ -1,10 +1,11 @@
 import email
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from instagram.database.core import get_db
+from instagram.follows.models import Follow
 from instagram.user.models import InstagramUser
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
@@ -53,8 +54,26 @@ def get_current_user(
     return user
 
 
+def add_user_meta(
+    db: Session, user: InstagramUser, viewing_user: InstagramUser
+) -> None:
+
+    mutual_followers_qry = (
+        db.query(InstagramUser)
+        .filter(InstagramUser.id.in_(viewing_user.following))
+        .filter(InstagramUser.id.in_(user.following))
+    )
+
+    user.mutual_followers["usernames"] = [
+        user.username for user in mutual_followers_qry.limit(3).all()
+    ]
+    user.mutual_followers["count"] = mutual_followers_qry.count()
+
+
 def get(db: Session, user_id: int) -> Optional[InstagramUser]:
-    return db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
+    user = db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
+    add_user_meta(db=db, user=user, viewing_user=user)
+    return user
 
 
 def get_by_username(db: Session, username: str) -> Optional[InstagramUser]:

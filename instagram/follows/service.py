@@ -24,11 +24,11 @@ def create(db: Session, from_user: InstagramUser, to_user: InstagramUser) -> Non
 
 
 def get_all_following(user: InstagramUser) -> List[InstagramUser]:
-    return [follow.to_user for follow in user.following]
+    return [follow.to_user for follow in user.following_follows]
 
 
 def get_all_followers(user: InstagramUser) -> List[InstagramUser]:
-    return [follow.from_user for follow in user.followers]
+    return [follow.from_user for follow in user.followers_follows]
 
 
 def delete(db: Session, from_user: InstagramUser, to_user: InstagramUser) -> None:

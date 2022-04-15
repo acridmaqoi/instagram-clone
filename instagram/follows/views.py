@@ -28,12 +28,10 @@ def delete_follow(
 
 
 @router.get("/{user_id}/following", response_model=UserReadList)
-def get_following(user: InstagramUser = Depends(get_authenticated_user)):
-    users = get_all_following(user=user)
-    return {"users": users, "count": len(users)}
+def get_following(user: InstagramUser = Depends(get_current_user)):
+    return {"users": user.following, "count": len(user.following)}
 
 
 @router.get("/{user_id}/followers", response_model=UserReadList)
-def get_followers(user: InstagramUser = Depends(get_authenticated_user)):
-    users = get_all_followers(user=user)
-    return {"users": users, "count": len(users)}
+def get_followers(user: InstagramUser = Depends(get_current_user)):
+    return {"users": user.followers, "count": len(user.followers)}

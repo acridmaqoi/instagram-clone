@@ -1,13 +1,17 @@
+from ast import For
 from datetime import datetime, timedelta
 from enum import unique
-from typing import List, Optional
+from types import SimpleNamespace
+from typing import ForwardRef, List, Optional
 
 import bcrypt
 from instagram.database.core import Base
+from instagram.follows.models import Follow
 from instagram.models import InstagramBase
 from jose import jwt
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
-from sqlalchemy import Column, Integer, LargeBinary, String
+from sqlalchemy import Column, Integer, LargeBinary, String, orm, select
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -33,8 +37,11 @@ class InstagramUser(Base):
     posts = relationship("Post")
     saved_posts = relationship("Save")
     likes = relationship("Like", back_populates="user")
-    followers = relationship("Follow", foreign_keys="[Follow.to_user_id]")
-    following = relationship("Follow", foreign_keys="[Follow.from_user_id]")
+    followers_follows = relationship("Follow", foreign_keys="[Follow.to_user_id]")
+    following_follows = relationship("Follow", foreign_keys="[Follow.from_user_id]")
+
+    followers = association_proxy("followers_follows", "from_user_id")
+    following = association_proxy("following_follows", "to_user_id")
 
     @hybrid_property
     def post_count(self):
@@ -42,11 +49,11 @@ class InstagramUser(Base):
 
     @hybrid_property
     def follower_count(self):
-        return len(self.followers)
+        return len(self.followers_follows)
 
     @hybrid_property
     def following_count(self):
-        return len(self.following)
+        return len(self.following_follows)
 
     def check_password(self, password: str):
         return bcrypt.checkpw(password.encode("utf-8"), self.password)
@@ -61,6 +68,13 @@ class InstagramUser(Base):
         }
         return jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
 
+    @orm.reconstructor
+    def init_on_load(self):
+        self.mutual_followers = {}
+
+
+UserRead = ForwardRef("UserRead")
+
 
 class UserBase(InstagramBase):
     username: str
@@ -69,16 +83,22 @@ class UserBase(InstagramBase):
     picture_url: Optional[HttpUrl]
 
 
+class UserReadList(InstagramBase):
+    users: List[UserRead]
+    count: int
+
+
+class UserMutualRead(InstagramBase):
+    usernames: List[str]
+    count: int
+
+
 class UserRead(UserBase):
     id: int
     post_count: int
     follower_count: int
     following_count: int
-
-
-class UserReadList(InstagramBase):
-    users: List[UserRead]
-    count: int
+    mutual_followers: UserMutualRead
 
 
 class UserUpdate(InstagramBase):
@@ -104,3 +124,6 @@ class UserLoginResponse(InstagramBase):
 
 class UserRegisterResponse(InstagramBase):
     token: Optional[str] = Field(None, nullable=False)
+
+
+UserReadList.update_forward_refs()

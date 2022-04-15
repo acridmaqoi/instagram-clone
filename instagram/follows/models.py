@@ -17,13 +17,13 @@ class Follow(Base):
     from_user = relationship(
         "InstagramUser",
         uselist=False,
-        back_populates="following",
+        back_populates="following_follows",
         foreign_keys="Follow.from_user_id",
     )
 
     to_user = relationship(
         "InstagramUser",
         uselist=False,
-        back_populates="followers",
+        back_populates="followers_follows",
         foreign_keys="Follow.to_user_id",
     )

@@ -51,7 +51,11 @@ def update_current_user(
 
 
 @router.get("/{user_id}", response_model=UserRead)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(
+    user_id: int,
+    viewing_user: InstagramUser = Depends(get_authenticated_user),
+    db: Session = Depends(get_db),
+):
     user = get(db=db, user_id=user_id)
     if not user:
         raise HTTPException(
