@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from enum import unique
-from typing import Optional
+from typing import List, Optional
 
 import bcrypt
 from instagram.database.core import Base
@@ -74,6 +74,11 @@ class UserRead(UserBase):
     post_count: int
     follower_count: int
     following_count: int
+
+
+class UserReadList(InstagramBase):
+    users: List[UserRead]
+    count: int
 
 
 class UserUpdate(InstagramBase):

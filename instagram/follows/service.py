@@ -1,3 +1,5 @@
+from typing import List
+
 from instagram.user.models import InstagramUser
 from psycopg2.errors import CheckViolation, UniqueViolation
 from sqlalchemy.exc import IntegrityError
@@ -19,6 +21,14 @@ def create(db: Session, from_user: InstagramUser, to_user: InstagramUser) -> Non
             print(f"user {from_user} has already followed {to_user}")
         else:
             raise
+
+
+def get_all_following(user: InstagramUser) -> List[InstagramUser]:
+    return [follow.to_user for follow in user.following]
+
+
+def get_all_followers(user: InstagramUser) -> List[InstagramUser]:
+    return [follow.from_user for follow in user.followers]
 
 
 def delete(db: Session, from_user: InstagramUser, to_user: InstagramUser) -> None:
