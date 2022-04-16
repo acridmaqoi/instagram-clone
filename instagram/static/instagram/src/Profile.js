@@ -170,7 +170,7 @@ function Profile() {
             <div
               className="profile__pageIcon"
               style={
-                location.pathname === `/${current_user.username}`
+                location.pathname === `/${user?.username}`
                   ? { color: "black" }
                   : {}
               }
@@ -180,21 +180,23 @@ function Profile() {
             </div>
           </Link>
         </div>
-        <div className="profile__page">
-          <Link to="./saved">
-            <div
-              className="profile__pageIcon"
-              style={
-                location.pathname === `/${current_user.username}/saved`
-                  ? { color: "black" }
-                  : {}
-              }
-            >
-              <BookmarkBorderIcon />
-              Saved
-            </div>
-          </Link>
-        </div>
+        {isMe() && (
+          <div className="profile__page">
+            <Link to="./saved">
+              <div
+                className="profile__pageIcon"
+                style={
+                  location.pathname === `/${user?.username}/saved`
+                    ? { color: "black" }
+                    : {}
+                }
+              >
+                <BookmarkBorderIcon />
+                Saved
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
 
       <Routes>
