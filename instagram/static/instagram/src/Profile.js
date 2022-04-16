@@ -3,6 +3,7 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
 import { default as React, useEffect, useState } from "react";
 import {
   Link,
@@ -58,6 +59,30 @@ function FollowButton({ user, setUser }) {
   );
 }
 
+function FollowModal({ open, user_id }) {
+  const [followers, setFollowers] = useState();
+
+  useEffect(() => {
+    if (open) {
+      axios.get(`/follows/${user_id}/followers`).then((res) => {
+        setFollowers(res.data.users);
+      });
+    }
+  }, [open]);
+
+  return (
+    <div>
+      <Modal open={open}>
+        <div>
+          {followers?.map((follower) => (
+            <div>{follower.username}</div>
+          ))}
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
 function Profile() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,6 +92,9 @@ function Profile() {
   const { id: username } = useParams();
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
+
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followingOpen, setFollowingOpen] = useState(false);
 
   const isMe = () => {
     return current_user?.username === user?.username;
@@ -142,16 +170,24 @@ function Profile() {
               <span className="profile__statNumber">{user?.postCount}</span>{" "}
               Posts
             </div>
-            <div className="profile__stat">
+            <div
+              className="profile__stat"
+              onClick={() => setFollowersOpen(true)}
+            >
               <span className="profile__statNumber">{user?.followerCount}</span>{" "}
               Followers
             </div>
-            <div className="profile__stat">
+            <FollowModal open={followersOpen} user_id={user?.id} />
+            <div
+              className="profile__stat"
+              onClick={() => setFollowingOpen(true)}
+            >
               <span className="profile__statNumber">
                 {user?.followingCount}
               </span>{" "}
               Following
             </div>
+            {/* <FollowModal open={followingOpen} /> */}
           </div>
           <div className="profile__desc">
             <div className="profile__name">{user?.name}</div>
