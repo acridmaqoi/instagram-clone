@@ -5,7 +5,7 @@ from typing import List
 
 from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
-from instagram.user.models import UserRead
+from instagram.user.models import UserReadSimple
 from pydantic import BaseModel, Field, HttpUrl
 from sqlalchemy import (
     TIMESTAMP,
@@ -119,7 +119,7 @@ class CommentCreate(InstagramBase):
 class CommentRead(InstagramBase):
     id: int
     text: str
-    user: UserRead
+    user: UserReadSimple
     like_count: int
 
 
@@ -134,7 +134,7 @@ class PostBase(InstagramBase):
 
 class PostRead(PostBase):
     id: int
-    user: UserRead
+    user: UserReadSimple
     posted_at: datetime
     comments: List[CommentRead]
     like_count: int

@@ -40,8 +40,10 @@ class InstagramUser(Base):
     followers_follows = relationship("Follow", foreign_keys="[Follow.to_user_id]")
     following_follows = relationship("Follow", foreign_keys="[Follow.from_user_id]")
 
-    followers = association_proxy("followers_follows", "from_user_id")
-    following = association_proxy("following_follows", "to_user_id")
+    followers = association_proxy("followers_follows", "from_user")
+    following = association_proxy("following_follows", "to_user")
+    followers_ids = association_proxy("followers_follows", "from_user_id")
+    following_ids = association_proxy("following_follows", "to_user_id")
 
     @hybrid_property
     def post_count(self):
@@ -73,9 +75,6 @@ class InstagramUser(Base):
         self.mutual_followers = {}
 
 
-UserRead = ForwardRef("UserRead")
-
-
 class UserBase(InstagramBase):
     username: str
     email: EmailStr
@@ -83,22 +82,30 @@ class UserBase(InstagramBase):
     picture_url: Optional[HttpUrl]
 
 
-class UserReadList(InstagramBase):
-    users: List[UserRead]
-    count: int
-
-
 class UserMutualRead(InstagramBase):
     usernames: List[str]
     count: int
 
 
-class UserRead(UserBase):
+class UserReadSimple(UserBase):
     id: int
     post_count: int
     follower_count: int
     following_count: int
+
+
+class UserReadFull(UserReadSimple):
     mutual_followers: UserMutualRead
+
+
+class UserReadSimpleList(InstagramBase):
+    users: List[UserReadSimple]
+    count: int
+
+
+class UserReadFullList(InstagramBase):
+    users: List[UserReadFull]
+    count: int
 
 
 class UserUpdate(InstagramBase):
@@ -124,6 +131,3 @@ class UserLoginResponse(InstagramBase):
 
 class UserRegisterResponse(InstagramBase):
     token: Optional[str] = Field(None, nullable=False)
-
-
-UserReadList.update_forward_refs()

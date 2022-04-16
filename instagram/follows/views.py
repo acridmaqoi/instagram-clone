@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from instagram.database.core import get_db
-from instagram.user.models import InstagramUser, UserRead, UserReadList
+from instagram.user.models import InstagramUser, UserReadSimple, UserReadSimpleList
 from instagram.user.service import get_authenticated_user, get_current_user
 from sqlalchemy.orm import Session
 
@@ -27,11 +27,13 @@ def delete_follow(
     delete(db=db, from_user=from_user, to_user=to_user)
 
 
-@router.get("/{user_id}/following", response_model=UserReadList)
-def get_following(user: InstagramUser = Depends(get_current_user)):
-    return {"users": user.following, "count": len(user.following)}
+@router.get("/{user_id}/following", response_model=UserReadSimpleList)
+def get_following(
+    user: InstagramUser = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    return {"users": list(user.following), "count": len(user.following)}
 
 
-@router.get("/{user_id}/followers", response_model=UserReadList)
+@router.get("/{user_id}/followers", response_model=UserReadSimpleList)
 def get_followers(user: InstagramUser = Depends(get_current_user)):
-    return {"users": user.followers, "count": len(user.followers)}
+    return {"users": list(user.followers), "count": len(user.followers)}

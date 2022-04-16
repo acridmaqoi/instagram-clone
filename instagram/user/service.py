@@ -60,8 +60,8 @@ def add_user_meta(
 
     mutual_followers_qry = (
         db.query(InstagramUser)
-        .filter(InstagramUser.id.in_(viewing_user.following))
-        .filter(InstagramUser.id.in_(user.following))
+        .filter(InstagramUser.id.in_(viewing_user.following_ids))
+        .filter(InstagramUser.id.in_(user.following_ids))
     )
 
     user.mutual_followers["usernames"] = [
