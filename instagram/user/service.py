@@ -58,6 +58,12 @@ def add_user_meta(
     db: Session, user: InstagramUser, viewing_user: InstagramUser
 ) -> None:
 
+    if user.id == viewing_user.id:
+        return
+
+    user.followed_by_viewer = user.id in viewing_user.following_ids
+    user.follows_viewer = user.id in viewing_user.followers_ids
+
     mutual_followers_qry = (
         db.query(InstagramUser)
         .filter(InstagramUser.id.in_(viewing_user.following_ids))
@@ -70,20 +76,26 @@ def add_user_meta(
     user.mutual_followers["count"] = mutual_followers_qry.count()
 
 
-def get(db: Session, user_id: int) -> Optional[InstagramUser]:
+def get(
+    db: Session, user_id: int, viewing_user: InstagramUser
+) -> Optional[InstagramUser]:
     user = db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
-    add_user_meta(db=db, user=user, viewing_user=user)
+    add_user_meta(db=db, user=user, viewing_user=viewing_user)
     return user
 
 
 def get_by_username(db: Session, username: str) -> Optional[InstagramUser]:
-    return (
+    user = (
         db.query(InstagramUser).filter(InstagramUser.username == username).one_or_none()
     )
+    add_user_meta(db=db, user=user, viewing_user=user)
+    return user
 
 
 def get_by_email(db: Session, email: str) -> Optional[InstagramUser]:
-    return db.query(InstagramUser).filter(InstagramUser.email == email).one_or_none()
+    user = db.query(InstagramUser).filter(InstagramUser.email == email).one_or_none()
+    add_user_meta(db=db, user=user, viewing_user=user)
+    return user
 
 
 def create(db: Session, user_in: UserRegister):

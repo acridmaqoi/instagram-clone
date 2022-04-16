@@ -57,7 +57,7 @@ def get_user(
     viewing_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    user = get(db=db, user_id=user_id)
+    user = get(db=db, user_id=user_id, viewing_user=viewing_user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

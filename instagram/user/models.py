@@ -72,7 +72,9 @@ class InstagramUser(Base):
 
     @orm.reconstructor
     def init_on_load(self):
-        self.mutual_followers = {}
+        self.mutual_followers = {"count": 0, "usernames": []}
+        self.followed_by_viewer = False
+        self.follows_viewer = False
 
 
 class UserBase(InstagramBase):
@@ -96,6 +98,8 @@ class UserReadSimple(UserBase):
 
 class UserReadFull(UserReadSimple):
     mutual_followers: UserMutualRead
+    followed_by_viewer: bool
+    follows_viewer: bool
 
 
 class UserReadSimpleList(InstagramBase):
