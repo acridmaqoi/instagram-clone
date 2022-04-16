@@ -3,7 +3,6 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
 import { default as React, useEffect, useState } from "react";
 import {
   Link,
@@ -13,75 +12,14 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import axios from "./axios";
-import PostGrid from "./PostGrid";
+import axios from "../axios";
+import PostGrid from "../PostGrid";
+import s3StaticImageUpload from "../s3";
+import SavedPosts from "../SavedPosts";
+import { useStateValue } from "../StateProvider";
+import FollowButton from "./FollowButton";
+import FollowModal from "./FollowModal";
 import "./Profile.css";
-import s3StaticImageUpload from "./s3";
-import SavedPosts from "./SavedPosts";
-import { useStateValue } from "./StateProvider";
-
-function FollowButton({ user, setUser }) {
-  const followProfileUser = () => {
-    axios.post(`/follows/${user.id}`).then(() => {
-      user.followedByViewer = true;
-      setUser({ ...user });
-    });
-  };
-  const unfollowProfileUser = () => {
-    axios.delete(`/follows/${user.id}`).then(() => {
-      user.followedByViewer = false;
-      setUser({ ...user });
-    });
-  };
-
-  return (
-    <div>
-      {user?.followedByViewer ? (
-        <Button
-          size="small"
-          variant="contained"
-          style={{ fontWeight: "600" }}
-          onClick={unfollowProfileUser}
-        >
-          Following
-        </Button>
-      ) : (
-        <Button
-          size="small"
-          variant="contained"
-          style={{ fontWeight: "600" }}
-          onClick={followProfileUser}
-        >
-          Follow
-        </Button>
-      )}
-    </div>
-  );
-}
-
-function FollowModal({ open, user_id }) {
-  const [followers, setFollowers] = useState();
-
-  useEffect(() => {
-    if (open) {
-      axios.get(`/follows/${user_id}/followers`).then((res) => {
-        setFollowers(res.data.users);
-      });
-    }
-  }, [open]);
-
-  return (
-    <div>
-      <Modal open={open}>
-        <div>
-          {followers?.map((follower) => (
-            <div>{follower.username}</div>
-          ))}
-        </div>
-      </Modal>
-    </div>
-  );
-}
 
 function Profile() {
   const navigate = useNavigate();
@@ -111,7 +49,7 @@ function Profile() {
         setUserPosts(res.data.posts);
       });
     });
-  }, []);
+  }, [navigate]);
 
   const updateUser = (user) => {
     axios.patch(`/users/current`, user);
@@ -177,7 +115,7 @@ function Profile() {
               <span className="profile__statNumber">{user?.followerCount}</span>{" "}
               Followers
             </div>
-            <FollowModal open={followersOpen} user_id={user?.id} />
+            <FollowModal open={followersOpen} user={user} setUser={setUser} />
             <div
               className="profile__stat"
               onClick={() => setFollowingOpen(true)}
@@ -239,15 +177,6 @@ function Profile() {
         <Route path="/" element={<PostGrid posts={userPosts} />} />
         <Route path="/saved" element={<SavedPosts />} />
       </Routes>
-      {/* {userPosts?.map((post, index) => (
-          <div className="profile__postItem">
-            <img
-              className="profile__postItem"
-              onClick={(e) => navigate(`/p/${post.id}`)}
-              src={post.images[0].url}
-            />
-          </div>
-        ))} */}
     </div>
   );
 }

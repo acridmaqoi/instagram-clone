@@ -1,0 +1,23 @@
+.follower {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.follower__user {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.follower__titles {
+}
+
+.follower__avatar {
+  margin-right: 15px;
+}
+
+.follower__username {
+  font-weight: 600;
+}

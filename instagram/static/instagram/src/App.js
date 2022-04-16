@@ -6,7 +6,7 @@ import Header from "./Header";
 import Home from "./Home";
 import Login from "./Login";
 import Post from "./Post";
-import Profile from "./Profile";
+import Profile from "./profile/Profile";
 import { setSession } from "./session";
 import { useStateValue } from "./StateProvider";
 import Upload from "./Upload";
