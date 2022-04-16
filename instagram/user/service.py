@@ -55,8 +55,10 @@ def get_current_user(
 
 
 def add_user_meta(
-    db: Session, user: InstagramUser, viewing_user: InstagramUser
+    db: Session, user: InstagramUser, viewing_user: InstagramUser | None = None
 ) -> None:
+    if viewing_user is None:
+        return
 
     if user.id == viewing_user.id:
         return
@@ -77,7 +79,7 @@ def add_user_meta(
 
 
 def get(
-    db: Session, user_id: int, viewing_user: InstagramUser
+    db: Session, user_id: int, viewing_user: InstagramUser | None = None
 ) -> Optional[InstagramUser]:
     user = db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
     add_user_meta(db=db, user=user, viewing_user=viewing_user)
