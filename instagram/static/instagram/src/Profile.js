@@ -114,7 +114,9 @@ function Profile() {
               Followers
             </div>
             <div className="profile__stat">
-              <span className="profile__statNumber">{user?.followCount}</span>{" "}
+              <span className="profile__statNumber">
+                {user?.followingCount}
+              </span>{" "}
               Following
             </div>
           </div>
