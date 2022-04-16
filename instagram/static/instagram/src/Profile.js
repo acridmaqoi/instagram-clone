@@ -3,7 +3,7 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import React, { useEffect, useState } from "react";
+import { default as React, useEffect, useState } from "react";
 import {
   Link,
   Route,
@@ -18,6 +18,45 @@ import "./Profile.css";
 import s3StaticImageUpload from "./s3";
 import SavedPosts from "./SavedPosts";
 import { useStateValue } from "./StateProvider";
+
+function FollowButton({ user, setUser }) {
+  const followProfileUser = () => {
+    axios.post(`/follows/${user.id}`).then(() => {
+      user.followedByViewer = true;
+      setUser({ ...user });
+    });
+  };
+  const unfollowProfileUser = () => {
+    axios.delete(`/follows/${user.id}`).then(() => {
+      user.followedByViewer = false;
+      setUser({ ...user });
+    });
+  };
+
+  return (
+    <div>
+      {user?.followedByViewer ? (
+        <Button
+          size="small"
+          variant="contained"
+          style={{ fontWeight: "600" }}
+          onClick={unfollowProfileUser}
+        >
+          Following
+        </Button>
+      ) : (
+        <Button
+          size="small"
+          variant="contained"
+          style={{ fontWeight: "600" }}
+          onClick={followProfileUser}
+        >
+          Follow
+        </Button>
+      )}
+    </div>
+  );
+}
 
 function Profile() {
   const navigate = useNavigate();
@@ -90,13 +129,7 @@ function Profile() {
             <div className="profile__title">{user?.username}</div>
             <div className="profile__actions">
               {!isMe() ? (
-                <Button
-                  size="small"
-                  variant="contained"
-                  style={{ fontWeight: "600" }}
-                >
-                  Follow
-                </Button>
+                <FollowButton user={user} setUser={setUser} />
               ) : (
                 <Button size="small" variant="outlined" color="secondary">
                   Edit Profile

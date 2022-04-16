@@ -68,8 +68,12 @@ def get_user(
 
 
 @router.get("/username/{username}", response_model=UserReadFull)
-def get_user_by_username(username: str, db: Session = Depends(get_db)):
-    user = get_by_username(db=db, username=username)
+def get_user_by_username(
+    username: str,
+    viewing_user: InstagramUser = Depends(get_authenticated_user),
+    db: Session = Depends(get_db),
+):
+    user = get_by_username(db=db, username=username, viewing_user=viewing_user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

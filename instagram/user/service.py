@@ -86,11 +86,13 @@ def get(
     return user
 
 
-def get_by_username(db: Session, username: str) -> Optional[InstagramUser]:
+def get_by_username(
+    db: Session, username: str, viewing_user: InstagramUser | None = None
+) -> Optional[InstagramUser]:
     user = (
         db.query(InstagramUser).filter(InstagramUser.username == username).one_or_none()
     )
-    add_user_meta(db=db, user=user, viewing_user=user)
+    add_user_meta(db=db, user=user, viewing_user=viewing_user)
     return user
 
 
