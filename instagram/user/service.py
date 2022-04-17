@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from instagram.database.core import get_db
-from instagram.follows.models import Follow
+from instagram.follow.models import Follow
 from instagram.user.models import InstagramUser
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session

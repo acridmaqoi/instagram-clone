@@ -6,7 +6,7 @@ from typing import ForwardRef, List, Optional
 
 import bcrypt
 from instagram.database.core import Base
-from instagram.follows.models import Follow
+from instagram.follow.models import Follow
 from instagram.models import InstagramBase
 from jose import jwt
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
