@@ -40,10 +40,6 @@ function FollowModal({ open, user, following, onClose }) {
       axios
         .get(`/follows/${user.id}/${following ? "following" : "followers"}`)
         .then((res) => {
-          let users = res.data.users;
-          for (let i = 0; i < 40; i++) {
-            users.push(res.data.users[0]);
-          }
           setUsers(res.data.users);
         });
     }
