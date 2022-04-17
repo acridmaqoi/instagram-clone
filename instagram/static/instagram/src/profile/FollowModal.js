@@ -31,20 +31,22 @@ function FollowRow({ follow_user }) {
   );
 }
 
-function FollowModal({ open, user }) {
-  const [followers, setFollowers] = useState();
+function FollowModal({ open, user, following, onClose }) {
+  const [users, setUsers] = useState();
 
   useEffect(() => {
     if (open) {
-      axios.get(`/follows/${user.id}/followers`).then((res) => {
-        setFollowers(res.data.users);
-      });
+      axios
+        .get(`/follows/${user.id}/${following ? "following" : "followers"}`)
+        .then((res) => {
+          setUsers(res.data.users);
+        });
     }
   }, [open]);
 
   return (
     <div>
-      <Modal open={open}>
+      <Modal open={open} onClose={onClose} disableAutoFocus={true}>
         <Box
           sx={{
             position: "absolute",
@@ -53,13 +55,13 @@ function FollowModal({ open, user }) {
             transform: "translate(-50%, -50%)",
             width: 400,
             bgcolor: "background.paper",
-            border: "2px solid #000",
+            //border: "2px solid #000",
             boxShadow: 24,
             p: 4,
           }}
         >
           <div>
-            {followers?.map((follower) => (
+            {users?.map((follower) => (
               <FollowRow follow_user={follower} />
             ))}
           </div>

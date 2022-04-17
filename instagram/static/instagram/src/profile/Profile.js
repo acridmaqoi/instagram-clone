@@ -115,7 +115,12 @@ function Profile() {
               <span className="profile__statNumber">{user?.followerCount}</span>{" "}
               Followers
             </div>
-            <FollowModal open={followersOpen} user={user} setUser={setUser} />
+            <FollowModal
+              open={followersOpen}
+              onClose={() => setFollowersOpen(false)}
+              user={user}
+              following={false}
+            />
             <div
               className="profile__stat"
               onClick={() => setFollowingOpen(true)}
@@ -125,7 +130,12 @@ function Profile() {
               </span>{" "}
               Following
             </div>
-            {/* <FollowModal open={followingOpen} /> */}
+            <FollowModal
+              open={followingOpen}
+              onClose={() => setFollowingOpen(false)}
+              user={user}
+              following={true}
+            />
           </div>
           <div className="profile__desc">
             <div className="profile__name">{user?.name}</div>
