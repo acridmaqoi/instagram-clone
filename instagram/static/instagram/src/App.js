@@ -5,7 +5,7 @@ import "./App.css";
 import Header from "./Header";
 import Home from "./Home";
 import Login from "./Login";
-import Post from "./Post";
+import Post from "./post/Post";
 import Profile from "./profile/Profile";
 import { setSession } from "./session";
 import { useStateValue } from "./StateProvider";

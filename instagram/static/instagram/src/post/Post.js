@@ -12,9 +12,9 @@ import { formatDistance } from "date-fns";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "./axios";
+import axios from "../axios";
+import PostGrid from "../PostGrid";
 import "./Post.css";
-import PostGrid from "./PostGrid";
 
 function PostDialog(props) {
   const { onClose, selectedValue, open } = props;
