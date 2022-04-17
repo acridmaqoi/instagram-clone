@@ -10,11 +10,12 @@ def create(
     comment_in: CommentCreate,
     post: Post,
     current_user: InstagramUser,
-) -> None:
+) -> Comment:
     comment = Comment(text=comment_in.text, post_id=post.id, user_id=current_user.id)
 
     db.add(comment)
     db.commit()
+    return comment
 
 
 def get(db: Session, comment_id: int) -> Comment | None:

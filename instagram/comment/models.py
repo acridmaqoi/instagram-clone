@@ -1,12 +1,15 @@
+from datetime import datetime
+
 from instagram.database.core import Base
 from instagram.like.models import LikeableEntity
-from instagram.models import InstagramBase
+from instagram.models import InstagramBase, TimeStampMixin
+from instagram.user.models import UserReadSimple
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 
-class Comment(LikeableEntity):
+class Comment(LikeableEntity, TimeStampMixin):
     id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
     text = Column(String, nullable=False)
     post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
@@ -28,3 +31,10 @@ class Comment(LikeableEntity):
 
 class CommentCreate(InstagramBase):
     text: str
+
+
+class CommentRead(CommentCreate):
+    id: int
+    created_at: datetime
+    like_count: int
+    user: UserReadSimple

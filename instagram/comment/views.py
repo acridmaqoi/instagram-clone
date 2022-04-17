@@ -11,6 +11,7 @@ from instagram.user.models import InstagramUser
 from instagram.user.service import get_authenticated_user
 from sqlalchemy.orm import Session
 
+from .models import CommentRead
 from .service import create, delete, get
 
 router = APIRouter(prefix="/comments", tags=["comments"])
@@ -18,7 +19,6 @@ router = APIRouter(prefix="/comments", tags=["comments"])
 
 def get_current_comment(
     comment_id: int,
-    current_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
     comment = get(db=db, comment_id=comment_id)
@@ -30,14 +30,14 @@ def get_current_comment(
     return comment
 
 
-@router.post("/{post_id}")
+@router.post("/{post_id}", response_model=CommentRead)
 def create_comment(
     comment_in: CommentCreate,
     current_user: InstagramUser = Depends(get_authenticated_user),
     current_post: Post = Depends(get_current_post),
     db: Session = Depends(get_db),
 ):
-    create(
+    return create(
         db=db,
         comment_in=comment_in,
         post=current_post,

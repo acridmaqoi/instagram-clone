@@ -3,6 +3,7 @@ from sqlite3 import Date
 from turtle import back
 from typing import List
 
+from instagram.comment.models import CommentRead
 from instagram.database.core import Base, SessionLocal
 from instagram.like.models import LikeableEntity
 from instagram.models import InstagramBase
@@ -68,13 +69,6 @@ class Post(LikeableEntity):
 
 class CommentCreate(InstagramBase):
     text: str
-
-
-class CommentRead(InstagramBase):
-    id: int
-    text: str
-    user: UserReadSimple
-    like_count: int
 
 
 class ImageBase(InstagramBase):
