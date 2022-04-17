@@ -112,7 +112,9 @@ function Profile() {
               className="profile__stat"
               onClick={() => setFollowersOpen(true)}
             >
-              <span className="profile__statNumber">{user?.followerCount}</span>{" "}
+              <span className={`profile__statNumber`}>
+                {user?.followerCount}
+              </span>{" "}
               Followers
             </div>
             <FollowModal
@@ -125,7 +127,7 @@ function Profile() {
               className="profile__stat"
               onClick={() => setFollowingOpen(true)}
             >
-              <span className="profile__statNumber">
+              <span className={`profile__statNumber`}>
                 {user?.followingCount}
               </span>{" "}
               Following
