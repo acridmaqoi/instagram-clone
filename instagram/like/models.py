@@ -7,6 +7,22 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
 
+class LikeableEntity(Base):
+    id = Column(Integer, primary_key=True)
+    type = Column(String(50))
+
+    likes = relationship("Like")
+
+    __mapper_args__ = {
+        "polymorphic_identity": "likeable_entity",
+        "polymorphic_on": type,
+    }
+
+    @hybrid_property
+    def like_count(self):
+        return len(self.likes)
+
+
 class Like(Base):
     id = Column(Integer, primary_key=True)
     entity_id = Column(

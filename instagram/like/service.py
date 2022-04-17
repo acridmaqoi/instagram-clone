@@ -1,8 +1,10 @@
 from typing import Optional, Type
 
-from instagram.post.models import Comment, Like, LikeableEntity, Post, PostCreate
+from instagram.post.models import Comment, LikeableEntity, Post, PostCreate
 from instagram.user.models import InstagramUser
 from sqlalchemy.orm import Session
+
+from .models import Like
 
 
 def create(db: Session, current_user: InstagramUser, current_post: Post):

@@ -12,11 +12,9 @@ from .service import (
     add_comment,
     create,
     delete,
-    dislike_post_or_comment,
     get,
     get_all_for_user,
     get_comment,
-    like_post_or_comment,
     uncomment,
 )
 

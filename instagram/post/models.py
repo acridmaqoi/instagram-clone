@@ -4,6 +4,7 @@ from turtle import back
 from typing import List
 
 from instagram.database.core import Base, SessionLocal
+from instagram.like.models import LikeableEntity
 from instagram.models import InstagramBase
 from instagram.user.models import UserReadSimple
 from pydantic import BaseModel, Field, HttpUrl
@@ -20,22 +21,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-
-
-class LikeableEntity(Base):
-    id = Column(Integer, primary_key=True)
-    type = Column(String(50))
-
-    likes = relationship("Like")
-
-    __mapper_args__ = {
-        "polymorphic_identity": "likeable_entity",
-        "polymorphic_on": type,
-    }
-
-    @hybrid_property
-    def like_count(self):
-        return len(self.likes)
 
 
 class Image(Base):
@@ -99,17 +84,6 @@ class Comment(LikeableEntity):
     __mapper_args__ = {
         "polymorphic_identity": "comment",
     }
-
-
-class Like(Base):
-    id = Column(Integer, primary_key=True)
-    entity_id = Column(
-        Integer, ForeignKey("likeable_entity.id", ondelete="CASCADE"), nullable=False
-    )
-    user_id = Column(Integer, ForeignKey("instagram_user.id"), nullable=False)
-
-    user = relationship("InstagramUser", back_populates="likes", uselist=False)
-    entity = relationship("LikeableEntity", back_populates="likes", uselist=False)
 
 
 class CommentCreate(InstagramBase):
