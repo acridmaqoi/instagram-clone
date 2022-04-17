@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from instagram.comment.views import router as comment_router
 from instagram.follow.views import router as friend_router
 from instagram.like.views import router as like_router
 from instagram.post.views import router as post_router
@@ -31,3 +32,4 @@ api.include_router(friend_router)
 api.include_router(util_router)
 api.include_router(like_router)
 api.include_router(save_router)
+api.include_router(comment_router)

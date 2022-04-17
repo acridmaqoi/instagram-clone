@@ -57,33 +57,13 @@ class Post(LikeableEntity):
         return len(self.comments)
 
 
-@event.listens_for(SessionLocal, "persistent_to_deleted")
-def delete_likeable_entity(session, object_):
-    # sqlalchemy doesn't support cascading polymorphic deletes
-    if not isinstance(object_, LikeableEntity):
-        return
-
-    session.query(LikeableEntity).filter(LikeableEntity.id == object_.id).delete()
-
-
-class Comment(LikeableEntity):
-    id = Column(Integer, ForeignKey("likeable_entity.id"), primary_key=True)
-    text = Column(String, nullable=False)
-    post_id = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
-    user_id = Column(Integer, ForeignKey("instagram_user.id"), nullable=False)
-
-    user = relationship("InstagramUser", uselist=False)
-
-    post = relationship(
-        "Post",
-        back_populates="comments",
-        uselist=False,
-        foreign_keys="Comment.post_id",
-    )
-
-    __mapper_args__ = {
-        "polymorphic_identity": "comment",
-    }
+# @event.listens_for(SessionLocal, "persistent_to_deleted")
+# def delete_likeable_entity(session, object_):
+#    # sqlalchemy doesn't support cascading polymorphic deletes
+#    if not isinstance(object_, LikeableEntity):
+#        return
+#
+#    session.query(LikeableEntity).filter(LikeableEntity.id == object_.id).delete()
 
 
 class CommentCreate(InstagramBase):

@@ -1,6 +1,6 @@
 from typing import Optional, Type
 
-from instagram.post.models import Comment, LikeableEntity, Post, PostCreate
+from instagram.post.models import LikeableEntity, Post, PostCreate
 from instagram.user.models import InstagramUser
 from sqlalchemy.orm import Session
 

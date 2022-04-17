@@ -7,16 +7,8 @@ from instagram.user.service import get_authenticated_user
 from instagram.user.views import get_current_user
 from sqlalchemy.orm import Session
 
-from .models import Comment, Post, PostCreate, PostRead, PostReadList
-from .service import (
-    add_comment,
-    create,
-    delete,
-    get,
-    get_all_for_user,
-    get_comment,
-    uncomment,
-)
+from .models import Post, PostCreate, PostRead, PostReadList
+from .service import create, delete, get, get_all_for_user
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
