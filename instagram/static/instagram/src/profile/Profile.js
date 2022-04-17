@@ -3,7 +3,7 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import { Divider } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import React, { useEffect, useState } from "react";
+import { default as React, useEffect, useState } from "react";
 import {
   Link,
   Route,
@@ -12,12 +12,14 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import axios from "./axios";
-import PostGrid from "./PostGrid";
+import axios from "../axios";
+import PostGrid from "../PostGrid";
+import s3StaticImageUpload from "../s3";
+import SavedPosts from "../SavedPosts";
+import { useStateValue } from "../StateProvider";
+import FollowButton from "./FollowButton";
+import FollowModal from "./FollowModal";
 import "./Profile.css";
-import s3StaticImageUpload from "./s3";
-import SavedPosts from "./SavedPosts";
-import { useStateValue } from "./StateProvider";
 
 function Profile() {
   const navigate = useNavigate();
@@ -28,6 +30,9 @@ function Profile() {
   const { id: username } = useParams();
   const [user, setUser] = useState();
   const [userPosts, setUserPosts] = useState();
+
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followingOpen, setFollowingOpen] = useState(false);
 
   const isMe = () => {
     return current_user?.username === user?.username;
@@ -44,7 +49,7 @@ function Profile() {
         setUserPosts(res.data.posts);
       });
     });
-  }, []);
+  }, [navigate]);
 
   const updateUser = (user) => {
     axios.patch(`/users/current`, user);
@@ -90,13 +95,7 @@ function Profile() {
             <div className="profile__title">{user?.username}</div>
             <div className="profile__actions">
               {!isMe() ? (
-                <Button
-                  size="small"
-                  variant="contained"
-                  style={{ fontWeight: "600" }}
-                >
-                  Follow
-                </Button>
+                <FollowButton user={user} setUser={setUser} />
               ) : (
                 <Button size="small" variant="outlined" color="secondary">
                   Edit Profile
@@ -109,14 +108,36 @@ function Profile() {
               <span className="profile__statNumber">{user?.postCount}</span>{" "}
               Posts
             </div>
-            <div className="profile__stat">
-              <span className="profile__statNumber">{user?.followerCount}</span>{" "}
+            <div
+              className="profile__stat"
+              onClick={() => setFollowersOpen(true)}
+            >
+              <span className={`profile__statNumber`}>
+                {user?.followerCount}
+              </span>{" "}
               Followers
             </div>
-            <div className="profile__stat">
-              <span className="profile__statNumber">{user?.followCount}</span>{" "}
+            <FollowModal
+              open={followersOpen}
+              onClose={() => setFollowersOpen(false)}
+              user={user}
+              following={false}
+            />
+            <div
+              className="profile__stat"
+              onClick={() => setFollowingOpen(true)}
+            >
+              <span className={`profile__statNumber`}>
+                {user?.followingCount}
+              </span>{" "}
               Following
             </div>
+            <FollowModal
+              open={followingOpen}
+              onClose={() => setFollowingOpen(false)}
+              user={user}
+              following={true}
+            />
           </div>
           <div className="profile__desc">
             <div className="profile__name">{user?.name}</div>
@@ -135,7 +156,7 @@ function Profile() {
             <div
               className="profile__pageIcon"
               style={
-                location.pathname === `/${current_user.username}`
+                location.pathname === `/${user?.username}`
                   ? { color: "black" }
                   : {}
               }
@@ -145,36 +166,29 @@ function Profile() {
             </div>
           </Link>
         </div>
-        <div className="profile__page">
-          <Link to="./saved">
-            <div
-              className="profile__pageIcon"
-              style={
-                location.pathname === `/${current_user.username}/saved`
-                  ? { color: "black" }
-                  : {}
-              }
-            >
-              <BookmarkBorderIcon />
-              Saved
-            </div>
-          </Link>
-        </div>
+        {isMe() && (
+          <div className="profile__page">
+            <Link to="./saved">
+              <div
+                className="profile__pageIcon"
+                style={
+                  location.pathname === `/${user?.username}/saved`
+                    ? { color: "black" }
+                    : {}
+                }
+              >
+                <BookmarkBorderIcon />
+                Saved
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
 
       <Routes>
         <Route path="/" element={<PostGrid posts={userPosts} />} />
         <Route path="/saved" element={<SavedPosts />} />
       </Routes>
-      {/* {userPosts?.map((post, index) => (
-          <div className="profile__postItem">
-            <img
-              className="profile__postItem"
-              onClick={(e) => navigate(`/p/${post.id}`)}
-              src={post.images[0].url}
-            />
-          </div>
-        ))} */}
     </div>
   );
 }

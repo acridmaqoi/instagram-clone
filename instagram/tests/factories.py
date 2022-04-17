@@ -6,7 +6,7 @@ from factory.fuzzy import FuzzyText
 from faker import Faker
 from instagram import main  # noqa
 from instagram.user.models import InstagramUser, hash_password
-from instagram.friendship.models import Follow
+from instagram.follows.models import Follow
 from instagram.like.models import Like
 from instagram.post.models import Comment, Post
 

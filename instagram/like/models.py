@@ -1,6 +1,6 @@
-from instagram.user.models import UserRead
 from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
+from instagram.user.models import UserReadSimple
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
 from sqlalchemy.ext.hybrid import hybrid_property

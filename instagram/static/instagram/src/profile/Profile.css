@@ -104,3 +104,7 @@
   font-size: large !important;
   margin-right: 5px;
 }
+
+.profile__stat {
+  cursor: pointer;
+}

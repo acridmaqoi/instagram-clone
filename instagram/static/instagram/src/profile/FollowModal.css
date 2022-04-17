@@ -1,0 +1,32 @@
+.follow__row {
+  margin-bottom: 10px;
+}
+
+.follower {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.follower__user {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.follower__titles {
+}
+
+.follower__avatar {
+  margin-right: 15px;
+}
+
+.follower__username {
+  font-weight: 600;
+}
+
+.follower__username > a {
+  color: black;
+  text-decoration: none;
+}
