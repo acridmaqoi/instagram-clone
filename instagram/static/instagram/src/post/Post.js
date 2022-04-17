@@ -15,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "../axios";
 import PostGrid from "../PostGrid";
 import "./Post.css";
+import PostComments from "./PostComments";
 
 function PostDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -128,7 +129,9 @@ function Post() {
             </div>
           </div>
           <div className="post__comments">
-            <div className="post__content">comments</div>
+            <div className="post__content">
+              <PostComments comments={post?.comments} />
+            </div>
           </div>
           <div className="post__actions">
             <div className="post__content post--horizontal">
