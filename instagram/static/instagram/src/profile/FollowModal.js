@@ -1,5 +1,4 @@
-import { Avatar } from "@mui/material";
-import Box from "@mui/material/Box";
+import { Avatar, List, Paper } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { default as React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -15,7 +14,9 @@ function FollowRow({ follow_user }) {
     <div className="follower">
       <div className="follower__user">
         <div className="follower__avatar">
-          <Avatar src={user.pictureUrl} />
+          <Link to={`/${user?.username}`}>
+            <Avatar src={user.pictureUrl} />
+          </Link>
         </div>
         <div className="follower__titles">
           <div className="follower__username">
@@ -39,6 +40,10 @@ function FollowModal({ open, user, following, onClose }) {
       axios
         .get(`/follows/${user.id}/${following ? "following" : "followers"}`)
         .then((res) => {
+          let users = res.data.users;
+          for (let i = 0; i < 40; i++) {
+            users.push(res.data.users[0]);
+          }
           setUsers(res.data.users);
         });
     }
@@ -47,25 +52,25 @@ function FollowModal({ open, user, following, onClose }) {
   return (
     <div>
       <Modal open={open} onClose={onClose} disableAutoFocus={true}>
-        <Box
+        <Paper
+          style={{ maxHeight: 500, overflow: "auto" }}
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: "background.paper",
-            //border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
+            p: 2,
           }}
         >
-          <div>
+          <List>
             {users?.map((follower) => (
-              <FollowRow follow_user={follower} />
+              <div className="follow__row">
+                <FollowRow follow_user={follower} />
+              </div>
             ))}
-          </div>
-        </Box>
+          </List>
+        </Paper>
       </Modal>
     </div>
   );

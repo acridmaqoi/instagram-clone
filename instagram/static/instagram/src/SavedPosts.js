@@ -9,7 +9,7 @@ function SavedPosts() {
     axios.get(`/saves`).then((res) => {
       setSavedPosts(res.data.posts);
     });
-  }, [savedPosts]);
+  }, []);
 
   return (
     <div>

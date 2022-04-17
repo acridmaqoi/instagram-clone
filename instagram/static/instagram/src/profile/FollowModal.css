@@ -1,3 +1,7 @@
+.follow__row {
+  margin-bottom: 10px;
+}
+
 .follower {
   display: flex;
   justify-content: space-between;
@@ -20,4 +24,9 @@
 
 .follower__username {
   font-weight: 600;
+}
+
+.follower__username > a {
+  color: black;
+  text-decoration: none;
 }
