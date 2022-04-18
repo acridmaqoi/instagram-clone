@@ -1,4 +1,5 @@
 import { Avatar } from "@mui/material";
+import { formatDistanceToNowStrict } from "date-fns";
 import React from "react";
 import "./PostComments.css";
 
@@ -13,7 +14,9 @@ function PostComments({ comments }) {
               <div className="comment__username">{comment.user.username}</div>
               <div className="comment__text">{comment.text}</div>
             </div>
-            <div className="comment__meta">date</div>
+            <div className="comment__meta">
+              {formatDistanceToNowStrict(new Date(comment?.createdAt))}
+            </div>
           </div>
         </div>
       ))}

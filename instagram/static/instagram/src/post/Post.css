@@ -66,7 +66,8 @@
   justify-content: space-between;
   max-width: 100% !important;
   max-height: 100%;
-  overflow-y: scroll;
+  overflow: scroll;
+  overflow-wrap: break-word;
 }
 
 .post__username {

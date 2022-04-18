@@ -3,6 +3,10 @@
   margin-bottom: 30px;
 }
 
+.comment__header {
+  margin-bottom: 5px;
+}
+
 .comment__avatar {
   margin-right: 10px;
   height: 32px;
@@ -14,14 +18,13 @@
   flex-direction: column;
 }
 
-.comment__header {
-}
-
 .comment__username {
   margin-right: 5px;
   font-weight: 600;
   float: left;
 }
 
-.comment__text {
+.comment__meta {
+  color: #909090;
+  font-size: 12px;
 }
