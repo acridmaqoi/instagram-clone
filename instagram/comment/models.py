@@ -4,7 +4,7 @@ from instagram.database.core import Base
 from instagram.like.models import LikeableEntity
 from instagram.models import InstagramBase, TimeStampMixin
 from instagram.user.models import UserReadSimple
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, orm
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -28,6 +28,11 @@ class Comment(LikeableEntity, TimeStampMixin):
         "polymorphic_identity": "comment",
     }
 
+    @orm.reconstructor
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.has_liked = False
+
 
 class CommentCreate(InstagramBase):
     text: str
@@ -37,4 +42,5 @@ class CommentRead(CommentCreate):
     id: int
     created_at: datetime
     like_count: int
+    has_liked: bool
     user: UserReadSimple

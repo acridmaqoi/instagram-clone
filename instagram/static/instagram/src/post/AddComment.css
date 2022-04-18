@@ -1,0 +1,17 @@
+.commentAdd {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.commentAdd__input {
+  border: 0px solid;
+  outline: none;
+  font-size: 13px;
+}
+
+.comment__button {
+  font-weight: 600;
+  color: #0095f6;
+  font-size: 13px;
+}

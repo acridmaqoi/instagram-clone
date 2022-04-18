@@ -24,11 +24,15 @@ class LikeableEntity(Base):
 
 
 class Like(Base):
-    id = Column(Integer, primary_key=True)
     entity_id = Column(
-        Integer, ForeignKey("likeable_entity.id", ondelete="CASCADE"), nullable=False
+        Integer,
+        ForeignKey("likeable_entity.id", ondelete="CASCADE"),
+        nullable=False,
+        primary_key=True,
     )
-    user_id = Column(Integer, ForeignKey("instagram_user.id"), nullable=False)
+    user_id = Column(
+        Integer, ForeignKey("instagram_user.id"), nullable=False, primary_key=True
+    )
 
     user = relationship("InstagramUser", back_populates="likes", uselist=False)
     entity = relationship("LikeableEntity", back_populates="likes", uselist=False)

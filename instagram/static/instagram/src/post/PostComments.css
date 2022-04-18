@@ -1,10 +1,19 @@
+.comments {
+  width: 100%;
+  justify-content: space-between;
+}
+
 .comment {
   display: flex;
   margin-bottom: 30px;
+  width: 100%;
 }
 
 .comment__header {
+  display: flex;
   margin-bottom: 5px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .comment__avatar {
@@ -16,6 +25,7 @@
 .comment__content {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .comment__username {

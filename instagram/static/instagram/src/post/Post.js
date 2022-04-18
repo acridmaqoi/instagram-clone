@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../axios";
 import PostGrid from "../PostGrid";
+import AddComment from "./AddComment";
 import "./Post.css";
 import PostComments from "./PostComments";
 
@@ -174,7 +175,9 @@ function Post() {
             </div>
           </div>
           <div className="post__addComment">
-            <div className="post__content">add comment</div>
+            <div className="post__content">
+              <AddComment post={post} setPost={setPost} />
+            </div>
           </div>
         </div>
         <PostDialog selectedValue={"add"} open={open} onClose={handleClose} />
