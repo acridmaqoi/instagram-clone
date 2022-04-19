@@ -1,0 +1,39 @@
+.commentAdd {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.commentAdd__input {
+  border: 0px solid;
+  outline: none;
+  font-size: 13px;
+}
+
+.comment__button {
+  font-weight: 600;
+  color: #0095f6;
+  font-size: 13px;
+  border: none;
+  background: none;
+}
+
+.comment__button:disabled {
+  opacity: 0.5;
+}
+
+.comment__button:hover:enabled {
+  cursor: pointer;
+}
+
+.comment__meta {
+  display: flex;
+}
+
+.comment__date {
+  margin-right: 8px;
+}
+
+.comment__likes {
+  font-weight: 600;
+}

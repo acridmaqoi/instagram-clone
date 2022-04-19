@@ -1,24 +1,42 @@
 from typing import Optional, Type
 
-from instagram.post.models import Comment, Like, LikeableEntity, Post, PostCreate
+from instagram.post.models import LikeableEntity, Post, PostCreate
 from instagram.user.models import InstagramUser
+from psycopg2.errors import UniqueViolation
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from .models import Like
 
-def create(db: Session, current_user: InstagramUser, current_post: Post):
-    # a user can only like a post/comment once
-    if (
-        db.query(InstagramUser)
-        .filter(InstagramUser.likes.any(entity_id=current_post.id))
-        .count()
-        == 0
-    ):
-        db.add(Like(entity_id=current_post.id, user_id=current_user.id))
+
+def get_likeable(db: Session, likeable_id: int) -> LikeableEntity | None:
+    return (
+        db.query(LikeableEntity).filter(LikeableEntity.id == likeable_id).one_or_none()
+    )
+
+
+def create(db: Session, current_user: InstagramUser, likeable: LikeableEntity):
+    try:
+        db.add(Like(entity_id=likeable.id, user_id=current_user.id))
         db.commit()
+    except IntegrityError as e:
+        if isinstance(e.orig, UniqueViolation):
+            db.rollback()
+            print(
+                f"user {current_user.id} has already liked {type(likeable).__name__} {likeable.id}"
+            )
+        else:
+            raise
 
 
-def delete(db: Session, current_user: InstagramUser, current_post: Post):
-    db.query(Like).filter(Like.entity_id == current_post.id).filter(
-        Like.user_id == current_user.id
-    ).delete()
-    db.commit()
+def delete(db: Session, likeable: LikeableEntity, current_user: InstagramUser) -> None:
+    like = (
+        db.query(Like)
+        .filter(Like.entity_id == likeable.id)
+        .filter(Like.user_id == current_user.id)
+        .one_or_none()
+    )
+
+    if like:
+        db.delete(like)
+        db.commit()

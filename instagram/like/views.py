@@ -1,29 +1,40 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from instagram.database.core import get_db
-from instagram.post.models import Comment, Post, PostCreate, PostRead
+from instagram.like.models import LikeableEntity
+from instagram.post.models import Post, PostCreate, PostRead
 from instagram.post.views import get_current_post
 from instagram.user.models import InstagramUser
 from instagram.user.service import get_authenticated_user
 from sqlalchemy.orm import Session
 
-from .service import create, delete
+from .service import create, delete, get_likeable
 
 router = APIRouter(prefix="/likes", tags=["likes"])
 
 
-@router.post("/{post_id}")
+def get_current_likeable(likeable_id: int, db: Session = Depends(get_db)):
+    likeable = get_likeable(db=db, likeable_id=likeable_id)
+    if not likeable:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Likeable with id={likeable_id} not found",
+        )
+    return likeable
+
+
+@router.post("/{likeable_id}")
 def create_like(
-    current_post: Post = Depends(get_current_post),
+    likeable: LikeableEntity = Depends(get_current_likeable),
     current_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    create(db=db, current_user=current_user, current_post=current_post)
+    create(db=db, current_user=current_user, likeable=likeable)
 
 
-@router.delete("/{post_id}")
+@router.delete("/{likeable_id}")
 def delete_like(
-    current_post: Post = Depends(get_current_post),
+    likeable: Post = Depends(get_current_likeable),
     current_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    delete(db=db, current_user=current_user, current_post=current_post)
+    delete(db=db, likeable=likeable, current_user=current_user)

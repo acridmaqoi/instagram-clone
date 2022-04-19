@@ -12,9 +12,11 @@ import { formatDistance } from "date-fns";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "./axios";
+import axios from "../axios";
+import PostGrid from "../PostGrid";
+import AddComment from "./AddComment";
 import "./Post.css";
-import PostGrid from "./PostGrid";
+import PostComments from "./PostComments";
 
 function PostDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -128,7 +130,9 @@ function Post() {
             </div>
           </div>
           <div className="post__comments">
-            <div className="post__content">comments</div>
+            <div className="post__content">
+              <PostComments comments={post?.comments} />
+            </div>
           </div>
           <div className="post__actions">
             <div className="post__content post--horizontal">
@@ -171,7 +175,9 @@ function Post() {
             </div>
           </div>
           <div className="post__addComment">
-            <div className="post__content">add comment</div>
+            <div className="post__content">
+              <AddComment post={post} setPost={setPost} />
+            </div>
           </div>
         </div>
         <PostDialog selectedValue={"add"} open={open} onClose={handleClose} />

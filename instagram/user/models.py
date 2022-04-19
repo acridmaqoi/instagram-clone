@@ -6,7 +6,7 @@ from typing import ForwardRef, List, Optional
 
 import bcrypt
 from instagram.database.core import Base
-from instagram.follows.models import Follow
+from instagram.follow.models import Follow
 from instagram.models import InstagramBase
 from jose import jwt
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
@@ -40,6 +40,8 @@ class InstagramUser(Base):
     followers_follows = relationship("Follow", foreign_keys="[Follow.to_user_id]")
     following_follows = relationship("Follow", foreign_keys="[Follow.from_user_id]")
 
+    liked_entities = association_proxy("likes", "entity")
+    liked_entities_ids = association_proxy("likes", "entity_id")
     followers = association_proxy("followers_follows", "from_user")
     following = association_proxy("following_follows", "to_user")
     followers_ids = association_proxy("followers_follows", "from_user_id")
