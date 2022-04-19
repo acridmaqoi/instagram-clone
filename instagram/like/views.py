@@ -3,11 +3,11 @@ from instagram.database.core import get_db
 from instagram.like.models import LikeableEntity
 from instagram.post.models import Post, PostCreate, PostRead
 from instagram.post.views import get_current_post
-from instagram.user.models import InstagramUser
+from instagram.user.models import InstagramUser, UserReadFullList, UserReadSimpleList
 from instagram.user.service import get_authenticated_user
 from sqlalchemy.orm import Session
 
-from .service import create, delete, get_likeable
+from .service import create, delete, get_all, get_likeable
 
 router = APIRouter(prefix="/likes", tags=["likes"])
 
@@ -29,6 +29,16 @@ def create_like(
     db: Session = Depends(get_db),
 ):
     create(db=db, current_user=current_user, likeable=likeable)
+
+
+@router.get("", response_model=UserReadFullList)
+def get_likes(
+    likeable: LikeableEntity = Depends(get_current_likeable),
+    current_user: InstagramUser = Depends(get_authenticated_user),
+    db: Session = Depends(get_db),
+):
+    likes = get_all(db=db, likeable_id=likeable.id)
+    return {"users": [like.user for like in likes], "count": len(likes)}
 
 
 @router.delete("/{likeable_id}")

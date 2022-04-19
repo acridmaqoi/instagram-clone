@@ -103,6 +103,10 @@ class UserReadFull(UserReadSimple):
     followed_by_viewer: bool
     follows_viewer: bool
 
+    @validator("follows_viewer")
+    def do_nothing(cls, value):
+        return value
+
 
 class UserReadSimpleList(InstagramBase):
     users: List[UserReadSimple]

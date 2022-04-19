@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import List, Optional, Type
 
 from instagram.post.models import LikeableEntity, Post, PostCreate
 from instagram.user.models import InstagramUser
@@ -27,6 +27,10 @@ def create(db: Session, current_user: InstagramUser, likeable: LikeableEntity):
             )
         else:
             raise
+
+
+def get_all(db: Session, likeable_id: int) -> List[Like]:
+    return db.query(Like).filter(Like.entity_id == likeable_id).all()
 
 
 def delete(db: Session, likeable: LikeableEntity, current_user: InstagramUser) -> None:
