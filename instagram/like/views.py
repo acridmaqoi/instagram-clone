@@ -12,17 +12,17 @@ from .service import create, delete, get_all, get_likeable
 router = APIRouter(prefix="/likes", tags=["likes"])
 
 
-def get_current_likeable(likeable_id: int, db: Session = Depends(get_db)):
-    likeable = get_likeable(db=db, likeable_id=likeable_id)
+def get_current_likeable(id: int, db: Session = Depends(get_db)):
+    likeable = get_likeable(db=db, likeable_id=id)
     if not likeable:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Likeable with id={likeable_id} not found",
+            detail=f"Likeable with id={id} not found",
         )
     return likeable
 
 
-@router.post("/{likeable_id}")
+@router.post("/{id}")
 def create_like(
     likeable: LikeableEntity = Depends(get_current_likeable),
     current_user: InstagramUser = Depends(get_authenticated_user),
@@ -41,7 +41,7 @@ def get_likes(
     return {"users": [like.user for like in likes], "count": len(likes)}
 
 
-@router.delete("/{likeable_id}")
+@router.delete("/{id}")
 def delete_like(
     likeable: Post = Depends(get_current_likeable),
     current_user: InstagramUser = Depends(get_authenticated_user),

@@ -17,6 +17,7 @@ import PostGrid from "../PostGrid";
 import AddComment from "./AddComment";
 import "./Post.css";
 import PostComments from "./PostComments";
+import UserLikesModal from "./UserLikesModal";
 
 function PostDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -57,6 +58,7 @@ function Post() {
   const [post, setPost] = useState();
   const [relatedPosts, setRelatedPosts] = useState();
   const [open, setOpen] = useState(false);
+  const [likesOpen, setLikesOpen] = useState(false);
 
   useEffect(() => {
     axios.get(`/posts/${post_id}`).then((res) => {
@@ -165,7 +167,14 @@ function Post() {
                   )}
                 </div>
               </div>
-              <div className="post__likes">{post?.likeCount} likes</div>
+              <div className="post__likes" onClick={() => setLikesOpen(true)}>
+                {post?.likeCount} likes
+              </div>
+              <UserLikesModal
+                open={likesOpen}
+                post={post}
+                onClose={() => setLikesOpen(false)}
+              />
               <div className="post__date">
                 {post &&
                   formatDistance(new Date(post?.postedAt), new Date(), {
