@@ -37,7 +37,7 @@ def get_likes(
     current_user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    likes = get_all(db=db, likeable_id=likeable.id)
+    likes = get_all(db=db, likeable_id=likeable.id, current_user=current_user)
     return {"users": [like.user for like in likes], "count": len(likes)}
 
 
