@@ -14,4 +14,14 @@
   font-weight: 600;
   color: #0095f6;
   font-size: 13px;
+  border: none;
+  background: none;
+}
+
+.comment__button:disabled {
+  opacity: 0.5;
+}
+
+.comment__button:hover:enabled {
+  cursor: pointer;
 }

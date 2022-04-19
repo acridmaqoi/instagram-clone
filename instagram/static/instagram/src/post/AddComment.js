@@ -26,9 +26,13 @@ function AddComment({ post, setPost }) {
         placeholder="Add a comment..."
       ></input>
 
-      <div className="comment__button" onClick={postComment}>
+      <button
+        className="comment__button"
+        onClick={postComment}
+        disabled={!comment}
+      >
         Post
-      </div>
+      </button>
     </div>
   );
 }
