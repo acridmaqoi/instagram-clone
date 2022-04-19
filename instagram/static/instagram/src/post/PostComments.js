@@ -13,6 +13,7 @@ function PostComment({ comment: initalComment }) {
     axios.post(`/likes/${comment.id}`).then(() => {});
     let _comment = { ...comment };
     _comment.hasLiked = true;
+    _comment.likeCount++;
     setComment(_comment);
   };
 
@@ -20,8 +21,19 @@ function PostComment({ comment: initalComment }) {
     axios.delete(`/likes/${comment.id}`).then(() => {
       let _comment = { ...comment };
       _comment.hasLiked = false;
+      _comment.likeCount--;
       setComment(_comment);
     });
+  };
+
+  const commentLikesText = () => {
+    if (comment.likeCount === 0) {
+      return "";
+    } else if (comment.likeCount == 1) {
+      return "1 like";
+    } else {
+      return `${comment.likeCount} likes`;
+    }
   };
 
   return (
@@ -45,7 +57,10 @@ function PostComment({ comment: initalComment }) {
           </div>
         </div>
         <div className="comment__meta">
-          {formatDistanceToNowStrict(new Date(comment?.createdAt))}
+          <div className="comment__date">
+            {formatDistanceToNowStrict(new Date(comment?.createdAt))}
+          </div>
+          <div className="comment__likes">{commentLikesText()}</div>
         </div>
       </div>
     </div>
