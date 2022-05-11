@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from instagram.database.core import get_db
+from instagram.models import user_context_response
 from instagram.user.models import InstagramUser
 from instagram.user.service import get_authenticated_user
 from instagram.user.views import get_current_user
@@ -33,15 +34,17 @@ def create_post(
     user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    return create(db=db, post_in=post_in, current_user=user)
+    post = create(db=db, post_in=post_in, current_user=user)
+    return user_context_response(PostRead, post, user)
 
 
-@router.get("/{post_id}", response_model=PostRead)
+@router.get("/{post_id}")
 def get_post(
     post: Post = Depends(get_current_post),
+    user: InstagramUser = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
-    return post
+    return user_context_response(PostRead, post, user)
 
 
 @router.get("", response_model=PostReadList)

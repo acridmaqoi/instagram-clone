@@ -5,10 +5,11 @@ from typing import List
 
 from instagram.comment.models import CommentRead
 from instagram.database.core import Base, SessionLocal
-from instagram.like.models import LikeableEntity
-from instagram.models import InstagramBase
-from instagram.user.models import UserReadSimple
-from pydantic import BaseModel, Field, HttpUrl
+from instagram.like.models import Like, LikeableEntity
+from instagram.models import InstagramBase, user_context
+from instagram.save.models import Save
+from instagram.user.models import InstagramUser, UserReadSimple
+from pydantic import BaseModel, Field, HttpUrl, root_validator
 from sqlalchemy import (
     TIMESTAMP,
     Column,
@@ -22,6 +23,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
+
+db = SessionLocal()
 
 
 class Image(Base):
@@ -87,8 +90,36 @@ class PostRead(PostBase):
     comments: List[CommentRead]
     like_count: int
     comment_count: int
-    has_liked: bool
-    has_saved: bool
+
+    @root_validator
+    def has_liked(cls, values):
+        try:
+            if user_context.get():
+                values["has_liked"] = (
+                    db.query(Like)
+                    .filter(Like.user_id == user_context.get())
+                    .filter(Like.entity_id == values["id"])
+                    .one_or_none()
+                    is not None
+                )
+        except:
+            pass
+        return values
+
+    @root_validator
+    def has_saved(cls, values):
+        try:
+            if user_context.get():
+                values["has_saved"] = (
+                    db.query(Save)
+                    .filter(Save.user_id == user_context.get())
+                    .filter(Save.post_id == values["id"])
+                    .one_or_none()
+                    is not None
+                )
+        except:
+            pass
+        return values
 
 
 class PostReadList(InstagramBase):

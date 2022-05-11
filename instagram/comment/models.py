@@ -1,12 +1,15 @@
 from datetime import datetime
 
-from instagram.database.core import Base
-from instagram.like.models import LikeableEntity
-from instagram.models import InstagramBase, TimeStampMixin
+from instagram.database.core import Base, SessionLocal
+from instagram.like.models import Like, LikeableEntity
+from instagram.models import InstagramBase, TimeStampMixin, user_context
 from instagram.user.models import UserReadSimple
+from pydantic import root_validator
 from sqlalchemy import Column, ForeignKey, Integer, String, orm
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
+
+db = SessionLocal()
 
 
 class Comment(LikeableEntity, TimeStampMixin):
@@ -44,3 +47,21 @@ class CommentRead(CommentCreate):
     like_count: int
     has_liked: bool
     user: UserReadSimple
+
+    @root_validator
+    def has_liked(cls, values):
+        try:
+            if user_context.get():
+                values["has_liked"] = (
+                    db.query(Like)
+                    .filter(Like.entity_id == values["id"])
+                    .filter(Like.user_id == user_context.get())
+                    .one_or_none()
+                    is not None
+                )
+        except:
+            pass
+        return values
+
+
+CommentRead.__post_root_validators__.reverse()

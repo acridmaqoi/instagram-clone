@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.routing import APIRouter
 from instagram.comment.models import Comment
 from instagram.database.core import get_db
+from instagram.models import user_context_response
 from instagram.post.models import CommentCreate, Post
 from instagram.post.views import get_current_post
 from instagram.user.models import InstagramUser
@@ -37,12 +38,14 @@ def create_comment(
     current_post: Post = Depends(get_current_post),
     db: Session = Depends(get_db),
 ):
-    return create(
+    comment = create(
         db=db,
         comment_in=comment_in,
         post=current_post,
         current_user=current_user,
     )
+
+    return user_context_response(comment, current_user)
 
 
 @router.delete("/{comment_id}")

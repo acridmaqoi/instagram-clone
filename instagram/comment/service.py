@@ -5,11 +5,6 @@ from sqlalchemy.orm import Session
 from .models import Comment
 
 
-def add_user_meta(db: Session, comment: Comment, current_user: InstagramUser) -> None:
-    if comment.id in current_user.liked_entities_ids:
-        comment.has_liked = True
-
-
 def create(
     db: Session,
     comment_in: CommentCreate,
@@ -21,7 +16,6 @@ def create(
     db.add(comment)
     db.commit()
 
-    add_user_meta(db=db, comment=comment, current_user=current_user)
     return comment
 
 

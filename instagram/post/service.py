@@ -8,19 +8,6 @@ from sqlalchemy.orm import Session
 from .models import Image, LikeableEntity, Post, PostCreate
 
 
-def add_user_meta(db: Session, post: Post, current_user: InstagramUser) -> None:
-    post.has_liked = next(
-        (True for like in post.likes if like.user_id == current_user.id), False
-    )
-    post.has_saved = next(
-        (True for save in current_user.saved_posts if save.post_id == post.id),
-        False,
-    )
-
-    for comment in post.comments:
-        comment_service.add_user_meta(db=db, comment=comment, current_user=current_user)
-
-
 def create(db: Session, post_in: PostCreate, current_user: InstagramUser) -> Post:
     post = Post(
         caption=post_in.caption,
@@ -30,14 +17,11 @@ def create(db: Session, post_in: PostCreate, current_user: InstagramUser) -> Pos
     db.add(post)
     db.commit()
 
-    add_user_meta(db=db, post=post, current_user=current_user)
     return post
 
 
 def get(db: Session, current_user: InstagramUser, post_id: int) -> Optional[Post]:
     post = db.query(Post).filter(Post.id == post_id).one_or_none()
-    if post:
-        add_user_meta(db=db, post=post, current_user=current_user)
 
     return post
 
@@ -51,8 +35,6 @@ def get_all_for_user(
         .filter(Post.id.not_in([id for id in exclude_posts_ids]))
         .all()
     )
-    for post in posts:
-        add_user_meta(db=db, post=post, current_user=current_user)
 
     return posts
 
