@@ -31,7 +31,7 @@ def get_current_comment(
     return comment
 
 
-@router.post("/{post_id}", response_model=CommentRead)
+@router.post("/{post_id}")
 def create_comment(
     comment_in: CommentCreate,
     current_user: InstagramUser = Depends(get_authenticated_user),
@@ -45,7 +45,7 @@ def create_comment(
         current_user=current_user,
     )
 
-    return user_context_response(comment, current_user)
+    return user_context_response(CommentRead, comment, current_user)
 
 
 @router.delete("/{comment_id}")
