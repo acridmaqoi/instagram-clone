@@ -1,10 +1,11 @@
 from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
-from instagram.user.models import UserReadSimple
+from instagram.user.models import InstagramUser, UserReadSimple
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_, true
 
 
 class LikeableEntity(Base):
@@ -21,6 +22,14 @@ class LikeableEntity(Base):
     @hybrid_property
     def like_count(self):
         return len(self.likes)
+
+    @hybrid_method
+    def is_liked_by(self, user: InstagramUser):
+        return any(like.user_id == user.id for like in self.likes)
+
+    @is_liked_by.expression
+    def is_liked_by(cls, user: InstagramUser):
+        return and_(true(), cls.likes.any(user_id=user.id))
 
 
 class Like(Base):

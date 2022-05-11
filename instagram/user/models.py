@@ -1,19 +1,20 @@
-from ast import For
 from datetime import datetime, timedelta
 from enum import unique
-from types import SimpleNamespace
-from typing import ForwardRef, List, Optional
+from typing import List, Optional
 
 import bcrypt
-from instagram.database.core import Base
+from instagram.database.core import Base, SessionLocal
 from instagram.follow.models import Follow
-from instagram.models import InstagramBase
+from instagram.models import InstagramBase, user_context
 from jose import jwt
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 from sqlalchemy import Column, Integer, LargeBinary, String, orm, select
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_, true
+
+db = SessionLocal()
 
 SECRET_KEY = "c13836d0e76c81a92a65ebb2f00bdb19c058e799c658559a6a73918e689bc99e"
 ALGORITHM = "HS256"
@@ -62,6 +63,22 @@ class InstagramUser(Base):
     def check_password(self, password: str):
         return bcrypt.checkpw(password.encode("utf-8"), self.password)
 
+    @hybrid_method
+    def is_following(self, user: "InstagramUser"):
+        return any(user.id in self.following_ids)
+
+    @is_following.expression
+    def is_following(cls, user):
+        return and_(true(), cls.following.any(user_id=user.id))
+
+    @hybrid_method
+    def is_followed_by(self, user: "InstagramUser"):
+        return any(user.id in self.followers_ids)
+
+    @is_followed_by.expression
+    def is_followed_by(cls, user):
+        return and_(true(), cls.followers.any(user_id=user.id))
+
     @property
     def token(self):
         now = datetime.utcnow()
@@ -100,8 +117,32 @@ class UserReadSimple(UserBase):
 
 class UserReadFull(UserReadSimple):
     mutual_followers: UserMutualRead
-    followed_by_viewer: bool
-    follows_viewer: bool
+
+    @root_validator
+    def follows_viewer(cls, values):
+        try:
+            if user_context.get():
+                values["follows_viewer"] = (
+                    db.query(InstagramUser.is_following(user_context.get()))
+                    .filter(InstagramUser.id == values["id"])
+                    .scalar()
+                )
+        except:
+            pass
+        return values
+
+    @root_validator
+    def followed_by_viewer(cls, values):
+        try:
+            if user_context.get():
+                values["followed_by_viewer"] = (
+                    db.query(InstagramUser.is_followed_by(user_context.get()))
+                    .filter(InstagramUser.id == values["id"])
+                    .scalar()
+                )
+        except:
+            pass
+        return values
 
 
 class UserReadSimpleList(InstagramBase):
