@@ -79,6 +79,19 @@ class InstagramUser(Base):
     def is_followed_by(cls, user):
         return and_(true(), cls.followers.any(user_id=user.id))
 
+    @hybrid_method
+    def mutual_followers(self, user: "InstagramUser"):
+        return set(self.followers).intersection(user.followers)
+
+    @mutual_followers.expression
+    def mutual_followers(cls, user):
+        pass
+        # return select([cls]).where(cls.id.in_())
+
+    @hybrid_method
+    def mutual_following(self, user: "InstagramUser"):
+        return self.is_following(user) and user.is_following(self)
+
     @property
     def token(self):
         now = datetime.utcnow()
@@ -118,31 +131,43 @@ class UserReadSimple(UserBase):
 class UserReadFull(UserReadSimple):
     mutual_followers: UserMutualRead
 
-    @root_validator
-    def follows_viewer(cls, values):
-        try:
-            if user_context.get():
-                values["follows_viewer"] = (
-                    db.query(InstagramUser.is_following(user_context.get()))
-                    .filter(InstagramUser.id == values["id"])
-                    .scalar()
-                )
-        except:
-            pass
-        return values
+    follows_viewer: bool = False
+    followed_by_viewer: bool = False
 
-    @root_validator
-    def followed_by_viewer(cls, values):
+    @validator("mutual_followers", always=True)
+    def calc_mutual_followers(cls, v, values):
         try:
-            if user_context.get():
-                values["followed_by_viewer"] = (
-                    db.query(InstagramUser.is_followed_by(user_context.get()))
-                    .filter(InstagramUser.id == values["id"])
-                    .scalar()
-                )
+            follows = (
+                db.query(InstagramUser.mutual_followers(user_context.get()))
+                .filter(InstagramUser.id == values["id"])
+                .all()
+            )
+            return v
+
+        except Exception as e:
+            return v
+
+    @validator("follows_viewer", always=True)
+    def calc_follows_viewer(cls, v, values):
+        try:
+            return (
+                db.query(InstagramUser.is_following(user_context.get()))
+                .filter(InstagramUser.id == values["id"])
+                .scalar()
+            )
         except:
-            pass
-        return values
+            return v
+
+    @validator("followed_by_viewer", always=True)
+    def calc_followed_by_viewer(cls, v, values):
+        try:
+            return (
+                db.query(InstagramUser.is_followed_by(user_context.get()))
+                .filter(InstagramUser.id == values["id"])
+                .scalar()
+            )
+        except:
+            return v
 
 
 class UserReadSimpleList(InstagramBase):
