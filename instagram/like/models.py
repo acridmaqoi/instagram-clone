@@ -23,13 +23,13 @@ class LikeableEntity(Base):
     def like_count(self):
         return len(self.likes)
 
-    @hybrid_method
-    def is_liked_by(self, user: InstagramUser):
-        return any(like.user_id == user.id for like in self.likes)
+    # @hybrid_method
+    # def is_liked_by(self, user: InstagramUser):
+    #    return any(like.user_id == user.id for like in self.likes)
 
-    @is_liked_by.expression
-    def is_liked_by(cls, user: InstagramUser):
-        return and_(true(), cls.likes.any(user_id=user.id))
+    # @is_liked_by.expression
+    # def is_liked_by(cls, user: InstagramUser):
+    #    return and_(true(), cls.likes.any(user_id=user.id))
 
 
 class Like(Base):
