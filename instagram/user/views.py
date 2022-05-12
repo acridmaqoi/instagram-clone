@@ -81,7 +81,7 @@ def get_user_by_username(
             detail=[{"msg": "The user with this username does not exist."}],
         )
 
-    return user
+    return user_context_response(UserReadFull, user, viewing_user)
 
 
 @router.post("/login", response_model=UserLoginResponse)

@@ -38,15 +38,23 @@ class InstagramUser(Base):
     posts = relationship("Post")
     saved_posts = relationship("Save")
     likes = relationship("Like", back_populates="user")
-    followers_follows = relationship("Follow", foreign_keys="[Follow.to_user_id]")
-    following_follows = relationship("Follow", foreign_keys="[Follow.from_user_id]")
+
+    followers = relationship(
+        "InstagramUser",
+        secondary="follow",
+        primaryjoin="Follow.to_user_id == InstagramUser.id",
+        secondaryjoin="Follow.from_user_id == InstagramUser.id",
+    )
+
+    following = relationship(
+        "InstagramUser",
+        secondary="follow",
+        primaryjoin="Follow.from_user_id == InstagramUser.id",
+        secondaryjoin="Follow.to_user_id == InstagramUser.id",
+    )
 
     liked_entities = association_proxy("likes", "entity")
     liked_entities_ids = association_proxy("likes", "entity_id")
-    followers = association_proxy("followers_follows", "from_user")
-    following = association_proxy("following_follows", "to_user")
-    followers_ids = association_proxy("followers_follows", "from_user_id")
-    following_ids = association_proxy("following_follows", "to_user_id")
 
     @hybrid_property
     def post_count(self):
@@ -54,30 +62,30 @@ class InstagramUser(Base):
 
     @hybrid_property
     def follower_count(self):
-        return len(self.followers_follows)
+        return len(self.followers)
 
     @hybrid_property
     def following_count(self):
-        return len(self.following_follows)
+        return len(self.following)
 
     def check_password(self, password: str):
         return bcrypt.checkpw(password.encode("utf-8"), self.password)
 
     @hybrid_method
     def is_following(self, user: "InstagramUser"):
-        return any(user.id in self.following_ids)
+        return any(user in self.followers)
 
     @is_following.expression
     def is_following(cls, user):
-        return and_(true(), cls.following.any(user_id=user.id))
+        return and_(true(), cls.following.any(id=user.id))
 
     @hybrid_method
     def is_followed_by(self, user: "InstagramUser"):
-        return any(user.id in self.followers_ids)
+        return any(user.id in self.followers)
 
     @is_followed_by.expression
     def is_followed_by(cls, user):
-        return and_(true(), cls.followers.any(user_id=user.id))
+        return and_(true(), cls.followers.any(id=user.id))
 
     @hybrid_method
     def mutual_followers(self, user: "InstagramUser"):
@@ -85,8 +93,11 @@ class InstagramUser(Base):
 
     @mutual_followers.expression
     def mutual_followers(cls, user):
-        pass
-        # return select([cls]).where(cls.id.in_())
+        return (
+            select([cls])
+            .where(cls.following.any(id=cls.id))
+            .where(cls.followers.any(id=user.id))
+        )
 
     @hybrid_method
     def mutual_following(self, user: "InstagramUser"):
@@ -137,14 +148,20 @@ class UserReadFull(UserReadSimple):
     @validator("mutual_followers", always=True)
     def calc_mutual_followers(cls, v, values):
         try:
-            follows = (
-                db.query(InstagramUser.mutual_followers(user_context.get()))
-                .filter(InstagramUser.id == values["id"])
+            mutual_followers = (
+                db.query(InstagramUser)
+                .filter(InstagramUser.following.any(id=values["id"]))
+                .filter(InstagramUser.followers.any(id=user_context.get().id))
+                .limit(3)
                 .all()
             )
-            return v
 
-        except Exception as e:
+            return {
+                "count": len(mutual_followers),
+                "usernames": [u.username for u in mutual_followers],
+            }
+
+        except LookupError as e:
             return v
 
     @validator("follows_viewer", always=True)
@@ -155,7 +172,7 @@ class UserReadFull(UserReadSimple):
                 .filter(InstagramUser.id == values["id"])
                 .scalar()
             )
-        except:
+        except LookupError as e:
             return v
 
     @validator("followed_by_viewer", always=True)
@@ -166,7 +183,7 @@ class UserReadFull(UserReadSimple):
                 .filter(InstagramUser.id == values["id"])
                 .scalar()
             )
-        except:
+        except LookupError as e:
             return v
 
 
