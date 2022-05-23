@@ -64,6 +64,14 @@ class Post(LikeableEntity):
     def comment_count(self):
         return len(self.comments)
 
+    @hybrid_method
+    def is_saved_by(self, user: InstagramUser):
+        return any(save.user_id == user.id for save in self.saves)
+
+    @is_saved_by.expression
+    def is_saved_by(cls, user: InstagramUser):
+        return and_(true(), cls.saves.any(user_id=user.id))
+
 
 class CommentCreate(InstagramBase):
     text: str
