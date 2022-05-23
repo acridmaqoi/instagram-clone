@@ -103,7 +103,6 @@ function Post() {
                 post={post}
                 onClose={() => setLikesOpen(false)}
               />
-
               <PostDate post={post} />
             </div>
           </div>
