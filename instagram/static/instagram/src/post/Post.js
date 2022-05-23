@@ -1,14 +1,7 @@
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import SendOutlined from "@mui/icons-material/SendOutlined";
 import { Avatar, Dialog, Divider, IconButton } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import ListItem from "@mui/material/ListItem";
-import { formatDistance } from "date-fns";
+import formatDistance from "date-fns/formatDistance";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,6 +9,7 @@ import axios from "../axios";
 import PostGrid from "../PostGrid";
 import AddComment from "./AddComment";
 import "./Post.css";
+import PostActions from "./PostActions";
 import PostComments from "./PostComments";
 import UserLikesModal from "./UserLikesModal";
 
@@ -138,35 +132,7 @@ function Post() {
           </div>
           <div className="post__actions">
             <div className="post__content post--horizontal">
-              <div className="post__buttons">
-                <div className="post__buttonsLeft">
-                  <Grid container spacing={1}>
-                    <Grid item>
-                      {post?.hasLiked ? (
-                        <FavoriteIcon
-                          style={{ color: "#ED4956" }}
-                          onClick={() => dislikePost()}
-                        />
-                      ) : (
-                        <FavoriteBorderIcon onClick={() => likePost()} />
-                      )}
-                    </Grid>
-                    <Grid item>
-                      <ChatBubbleOutlineIcon />
-                    </Grid>
-                    <Grid item>
-                      <SendOutlined />
-                    </Grid>
-                  </Grid>
-                </div>
-                <div className="post__buttonsRight">
-                  {post?.hasSaved ? (
-                    <BookmarkIcon onClick={() => unsavePost()} />
-                  ) : (
-                    <BookmarkBorderOutlinedIcon onClick={() => savePost()} />
-                  )}
-                </div>
-              </div>
+              <PostActions post={post} setPost={setPost} />
               <div className="post__likes" onClick={() => setLikesOpen(true)}>
                 {post?.likeCount} likes
               </div>
