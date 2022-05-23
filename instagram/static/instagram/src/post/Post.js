@@ -1,6 +1,5 @@
 import { Dialog, Divider } from "@mui/material";
 import ListItem from "@mui/material/ListItem";
-import formatDistance from "date-fns/formatDistance";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import AddComment from "./AddComment";
 import "./Post.css";
 import PostActions from "./PostActions";
 import PostComments from "./PostComments";
+import PostDate from "./PostDate";
 import PostHeader from "./PostHeader";
 import UserLikesModal from "./UserLikesModal";
 
@@ -103,12 +103,8 @@ function Post() {
                 post={post}
                 onClose={() => setLikesOpen(false)}
               />
-              <div className="post__date">
-                {post &&
-                  formatDistance(new Date(post?.postedAt), new Date(), {
-                    addSuffix: true,
-                  })}
-              </div>
+
+              <PostDate post={post} />
             </div>
           </div>
           <div className="post__addComment">
