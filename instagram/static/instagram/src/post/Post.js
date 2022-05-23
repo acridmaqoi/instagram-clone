@@ -11,7 +11,7 @@ import PostActions from "./PostActions";
 import PostComments from "./PostComments";
 import PostDate from "./PostDate";
 import PostHeader from "./PostHeader";
-import UserLikesModal from "./UserLikesModal";
+import PostLikeCount from "./PostLikeCount";
 
 function PostDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -52,7 +52,6 @@ function Post() {
   const [post, setPost] = useState();
   const [relatedPosts, setRelatedPosts] = useState();
   const [open, setOpen] = useState(false);
-  const [likesOpen, setLikesOpen] = useState(false);
 
   useEffect(() => {
     axios.get(`/posts/${post_id}`).then((res) => {
@@ -95,14 +94,7 @@ function Post() {
           <div className="post__actions">
             <div className="post__content post--horizontal">
               <PostActions post={post} setPost={setPost} />
-              <div className="post__likes" onClick={() => setLikesOpen(true)}>
-                {post?.likeCount} likes
-              </div>
-              <UserLikesModal
-                open={likesOpen}
-                post={post}
-                onClose={() => setLikesOpen(false)}
-              />
+              <PostLikeCount post={post} />
               <PostDate post={post} />
             </div>
           </div>
