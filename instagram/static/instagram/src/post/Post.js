@@ -1,5 +1,4 @@
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Avatar, Dialog, Divider, IconButton } from "@mui/material";
+import { Dialog, Divider } from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import formatDistance from "date-fns/formatDistance";
 import PropTypes from "prop-types";
@@ -11,6 +10,7 @@ import AddComment from "./AddComment";
 import "./Post.css";
 import PostActions from "./PostActions";
 import PostComments from "./PostComments";
+import PostHeader from "./PostHeader";
 import UserLikesModal from "./UserLikesModal";
 
 function PostDialog(props) {
@@ -77,36 +77,6 @@ function Post() {
     }
   };
 
-  const likePost = () => {
-    axios.post(`/likes/${post_id}`).then((res) => {
-      post.likeCount++;
-      post.hasLiked = true;
-      setPost({ ...post });
-    });
-  };
-
-  const dislikePost = () => {
-    axios.delete(`/likes/${post.id}`).then((res) => {
-      post.likeCount--;
-      post.hasLiked = false;
-      setPost({ ...post });
-    });
-  };
-
-  const savePost = () => {
-    axios.post(`/saves/${post.id}`).then((res) => {
-      post.hasSaved = true;
-      setPost({ ...post });
-    });
-  };
-
-  const unsavePost = () => {
-    axios.delete(`/saves/${post.id}`).then((res) => {
-      post.hasSaved = false;
-      setPost({ ...post });
-    });
-  };
-
   return (
     <div className="post">
       <div className="post__container">
@@ -115,15 +85,7 @@ function Post() {
         </div>
         <div className="post__info">
           <div className="post__author">
-            <div className="post__content post--center">
-              <div className="post__authorInfo">
-                <Avatar src={post?.user.pictureUrl} />
-                <div className="post__username">{post?.user.username}</div>
-              </div>
-              <IconButton onClick={() => setOpen(true)}>
-                <MoreHorizIcon />
-              </IconButton>
-            </div>
+            <PostHeader post={post} setOpen={setOpen} />
           </div>
           <div className="post__comments">
             <div className="post__content">
