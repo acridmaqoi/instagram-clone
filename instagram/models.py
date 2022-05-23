@@ -17,7 +17,7 @@ def set_user_context(state):
 
 
 def user_context_response(pydantic_model, model, user):
-    with set_user_context(user.id):
+    with set_user_context(user):
         model = pydantic_model.from_orm(model)
         return model
 

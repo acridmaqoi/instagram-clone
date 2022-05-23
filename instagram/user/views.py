@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from instagram.database.core import get_db
+from instagram.models import user_context_response
 from sqlalchemy.orm import Session
 
 from .models import (
@@ -51,7 +52,7 @@ def update_current_user(
     return update(db=db, user_in=user_in, current_user=current_user)
 
 
-@router.get("/{user_id}", response_model=UserReadFull)
+@router.get("/{user_id}")
 def get_user(
     user_id: int,
     viewing_user: InstagramUser = Depends(get_authenticated_user),
@@ -64,7 +65,7 @@ def get_user(
             detail=[{"msg": "The user with this id does not exist."}],
         )
 
-    return user
+    return user_context_response(UserReadFull, user, viewing_user)
 
 
 @router.get("/username/{username}", response_model=UserReadFull)
@@ -80,7 +81,7 @@ def get_user_by_username(
             detail=[{"msg": "The user with this username does not exist."}],
         )
 
-    return user
+    return user_context_response(UserReadFull, user, viewing_user)
 
 
 @router.post("/login", response_model=UserLoginResponse)

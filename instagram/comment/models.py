@@ -3,11 +3,12 @@ from datetime import datetime
 from instagram.database.core import Base, SessionLocal
 from instagram.like.models import Like, LikeableEntity
 from instagram.models import InstagramBase, TimeStampMixin, user_context
-from instagram.user.models import UserReadSimple
-from pydantic import root_validator
-from sqlalchemy import Column, ForeignKey, Integer, String, orm
-from sqlalchemy.ext.hybrid import hybrid_property
+from instagram.user.models import InstagramUser, UserReadSimple
+from pydantic import BaseModel, Field, root_validator, validator
+from sqlalchemy import Column, ForeignKey, Integer, String, delete, event, orm
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_, true
 
 db = SessionLocal()
 
@@ -45,23 +46,19 @@ class CommentRead(CommentCreate):
     id: int
     created_at: datetime
     like_count: int
-    has_liked: bool
     user: UserReadSimple
 
-    @root_validator
-    def has_liked(cls, values):
+    has_liked: bool = False
+
+    @validator("has_liked", always=True)
+    def calc_has_liked(cls, v, values):
         try:
-            if user_context.get():
-                values["has_liked"] = (
-                    db.query(Like)
-                    .filter(Like.entity_id == values["id"])
-                    .filter(Like.user_id == user_context.get())
-                    .one_or_none()
-                    is not None
-                )
-        except:
-            pass
-        return values
+            comment = db.query(Comment).filter(Comment.id == values["id"]).one()
 
-
-CommentRead.__post_root_validators__.reverse()
+            return (
+                db.query(InstagramUser.has_liked(comment))
+                .filter(InstagramUser.id == user_context.get().id)
+                .scalar()
+            )
+        except LookupError as e:
+            return v

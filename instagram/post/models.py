@@ -9,7 +9,7 @@ from instagram.like.models import Like, LikeableEntity
 from instagram.models import InstagramBase, user_context
 from instagram.save.models import Save
 from instagram.user.models import InstagramUser, UserReadSimple
-from pydantic import BaseModel, Field, HttpUrl, root_validator
+from pydantic import BaseModel, Field, HttpUrl, root_validator, validator
 from sqlalchemy import (
     TIMESTAMP,
     Column,
@@ -17,12 +17,15 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    and_,
     delete,
     event,
     func,
+    true,
 )
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_, true
 
 db = SessionLocal()
 
@@ -45,6 +48,7 @@ class Post(LikeableEntity):
 
     images = relationship("Image", cascade="all,delete", back_populates="post")
     user = relationship("InstagramUser", uselist=False, back_populates="posts")
+    saves = relationship("Save", cascade="all,delete", back_populates="post")
     comments = relationship(
         "Comment",
         back_populates="post",
@@ -60,14 +64,13 @@ class Post(LikeableEntity):
     def comment_count(self):
         return len(self.comments)
 
+    @hybrid_method
+    def is_saved_by(self, user: InstagramUser):
+        return any(save.user_id == user.id for save in self.saves)
 
-# @event.listens_for(SessionLocal, "persistent_to_deleted")
-# def delete_likeable_entity(session, object_):
-#    # sqlalchemy doesn't support cascading polymorphic deletes
-#    if not isinstance(object_, LikeableEntity):
-#        return
-#
-#    session.query(LikeableEntity).filter(LikeableEntity.id == object_.id).delete()
+    @is_saved_by.expression
+    def is_saved_by(cls, user: InstagramUser):
+        return and_(true(), cls.saves.any(user_id=user.id))
 
 
 class CommentCreate(InstagramBase):
@@ -90,36 +93,33 @@ class PostRead(PostBase):
     comments: List[CommentRead]
     like_count: int
     comment_count: int
+    has_liked: bool = False
+    has_saved: bool = False
 
-    @root_validator
-    def has_liked(cls, values):
+    @validator("has_liked", always=True)
+    def calc_has_liked(cls, v, values):
         try:
-            if user_context.get():
-                values["has_liked"] = (
-                    db.query(Like)
-                    .filter(Like.user_id == user_context.get())
-                    .filter(Like.entity_id == values["id"])
-                    .one_or_none()
-                    is not None
-                )
-        except:
-            pass
-        return values
+            post = db.query(Post).filter(Post.id == values["id"]).one()
 
-    @root_validator
-    def has_saved(cls, values):
+            return (
+                db.query(InstagramUser.has_liked(post))
+                .filter(InstagramUser.id == user_context.get().id)
+                .scalar()
+            )
+
+        except Exception as e:
+            return v
+
+    @validator("has_saved", always=True)
+    def calc_has_saved(cls, v, values):
         try:
-            if user_context.get():
-                values["has_saved"] = (
-                    db.query(Save)
-                    .filter(Save.user_id == user_context.get())
-                    .filter(Save.post_id == values["id"])
-                    .one_or_none()
-                    is not None
-                )
-        except:
-            pass
-        return values
+            return (
+                db.query(Post.is_saved_by(user_context.get()))
+                .filter(Post.id == values["id"])
+                .scalar()
+            )
+        except Exception as e:
+            return v
 
 
 class PostReadList(InstagramBase):

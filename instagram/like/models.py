@@ -1,10 +1,11 @@
 from instagram.database.core import Base, SessionLocal
 from instagram.models import InstagramBase
-from instagram.user.models import UserReadSimple
+from instagram.user.models import InstagramUser, UserReadSimple
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, ForeignKey, Integer, String, delete, event
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import and_, true
 
 
 class LikeableEntity(Base):

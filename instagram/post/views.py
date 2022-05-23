@@ -38,7 +38,7 @@ def create_post(
     return user_context_response(PostRead, post, user)
 
 
-@router.get("/{post_id}")
+@router.get("/{post_id}", response_model=PostRead)
 def get_post(
     post: Post = Depends(get_current_post),
     user: InstagramUser = Depends(get_authenticated_user),

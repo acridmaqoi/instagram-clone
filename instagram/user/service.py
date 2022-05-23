@@ -82,7 +82,6 @@ def get(
     db: Session, user_id: int, viewing_user: InstagramUser | None = None
 ) -> Optional[InstagramUser]:
     user = db.query(InstagramUser).filter(InstagramUser.id == user_id).one_or_none()
-    add_user_meta(db=db, user=user, viewing_user=viewing_user)
     return user
 
 
@@ -92,13 +91,11 @@ def get_by_username(
     user = (
         db.query(InstagramUser).filter(InstagramUser.username == username).one_or_none()
     )
-    add_user_meta(db=db, user=user, viewing_user=viewing_user)
     return user
 
 
 def get_by_email(db: Session, email: str) -> Optional[InstagramUser]:
     user = db.query(InstagramUser).filter(InstagramUser.email == email).one_or_none()
-    add_user_meta(db=db, user=user, viewing_user=user)
     return user
 
 

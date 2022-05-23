@@ -1,12 +1,13 @@
 import functools
 import re
 
+from click import echo
 from instagram import config
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import scoped_session, session, sessionmaker
 
-engine = create_engine(str(config.SQLALCHEMY_DATABASE_URI))
+engine = create_engine(str(config.SQLALCHEMY_DATABASE_URI), echo=False)
 
 # add correct schema mapping
 schema_engine = engine.execution_options(
