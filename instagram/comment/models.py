@@ -32,14 +32,6 @@ class Comment(LikeableEntity, TimeStampMixin):
         "polymorphic_identity": "comment",
     }
 
-    @hybrid_method
-    def is_liked_by(self, user: InstagramUser):
-        return any(like.user_id == user.id for like in self.likes)
-
-    @is_liked_by.expression
-    def is_liked_by(cls, user: InstagramUser):
-        return and_(true(), cls.likes.any(user_id=user.id))
-
     @orm.reconstructor
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -61,9 +53,11 @@ class CommentRead(CommentCreate):
     @validator("has_liked", always=True)
     def calc_has_liked(cls, v, values):
         try:
+            comment = db.query(Comment).filter(Comment.id == values["id"]).one()
+
             return (
-                db.query(Comment.is_liked_by(user_context.get()))
-                .filter(Comment.id == values["id"])
+                db.query(InstagramUser.has_liked(comment))
+                .filter(InstagramUser.id == user_context.get().id)
                 .scalar()
             )
         except LookupError as e:

@@ -64,31 +64,6 @@ class Post(LikeableEntity):
     def comment_count(self):
         return len(self.comments)
 
-    @hybrid_method
-    def is_liked_by(self, user: InstagramUser):
-        return any(like.user_id == user.id for like in self.likes)
-
-    @is_liked_by.expression
-    def is_liked_by(cls, user: InstagramUser):
-        return and_(true(), cls.likes.any(user_id=user.id))
-
-    @hybrid_method
-    def is_saved_by(self, user: InstagramUser):
-        return any(save.user_id == user.id for save in self.saves)
-
-    @is_saved_by.expression
-    def is_saved_by(cls, user: InstagramUser):
-        return and_(true(), cls.saves.any(user_id=user.id))
-
-
-# @event.listens_for(SessionLocal, "persistent_to_deleted")
-# def delete_likeable_entity(session, object_):
-#    # sqlalchemy doesn't support cascading polymorphic deletes
-#    if not isinstance(object_, LikeableEntity):
-#        return
-#
-#    session.query(LikeableEntity).filter(LikeableEntity.id == object_.id).delete()
-
 
 class CommentCreate(InstagramBase):
     text: str
@@ -116,11 +91,14 @@ class PostRead(PostBase):
     @validator("has_liked", always=True)
     def calc_has_liked(cls, v, values):
         try:
+            post = db.query(Post).filter(Post.id == values["id"]).one()
+
             return (
-                db.query(Post.is_liked_by(user_context.get()))
-                .filter(Post.id == values["id"])
+                db.query(InstagramUser.has_liked(post))
+                .filter(InstagramUser.id == user_context.get().id)
                 .scalar()
             )
+
         except Exception as e:
             return v
 

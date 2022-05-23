@@ -103,6 +103,14 @@ class InstagramUser(Base):
     def mutual_following(self, user: "InstagramUser"):
         return self.is_following(user) and user.is_following(self)
 
+    @hybrid_method
+    def has_liked(self, entity: "LikeableEntity"):
+        return entity in self.liked_entities
+
+    @has_liked.expression
+    def has_liked(cls, entity):
+        return and_(true(), cls.likes.any(entity_id=entity.id))
+
     @property
     def token(self):
         now = datetime.utcnow()
